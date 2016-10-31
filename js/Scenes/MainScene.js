@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { View, TouchableHighlight, StyleSheet, Text as ReactText } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Content, Badge, Text } from 'native-base';
+import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import Drawer from 'react-native-drawer';
 import MainDrawer from '../Drawers/MainDrawer';
@@ -31,6 +32,23 @@ export default class MainScene extends Component {
             showDrawer: false
         }
     }
+    openMenu() {
+        this.refs.MenuContext.openMenu("menu");
+    }
+
+    gotoScene(id) {
+        if (id == "sign-in") {
+            this.props.navigator.resetTo({
+                id: id
+            });
+        }
+        else {
+            this.props.navigator.push({
+                id: id
+            });
+        }
+    }
+
     onShowDrawer() {
         this.setState({
             showDrawer: true
@@ -65,36 +83,53 @@ export default class MainScene extends Component {
                     mainOverlay: { opacity:ratio/1.75 }
                 })}
                 >
-                <Container>
-                    <Header>
-                        <Button transparent onPress={this.onShowDrawer.bind(this)}>
-                            <Icon name="md-menu" />
-                        </Button>
-                        <Title>Item View</Title>
-                    </Header>
-                    <Content>
-                        <List>
-                            {items}
-                        </List>
-                    </Content>
-                    <View style={styles.addButton}>
-                        <Button rounded primary textStyle={{lineHeight: 20}}>
-                            <Icon name="md-person-add" />
-                        </Button>
-                    </View>
-                    <Footer>
-                        <FooterTab>
-                            <Button active>
-                                Items
-                                <Icon name="md-cart"/>
+                <MenuContext style={{ flex: 1 }} ref="MenuContext">
+                    <Menu name="menu" style={styles.moreMenu} onSelect={this.gotoScene.bind(this)}>
+                        <MenuTrigger>
+                        </MenuTrigger>
+                        <MenuOptions>
+                            <MenuOption value="about">
+                                <Text>About</Text>
+                            </MenuOption>
+                            <MenuOption value="sign-in">
+                                <Text>Log Out</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
+                    <Container>
+                        <Header>
+                            <Button transparent onPress={this.onShowDrawer.bind(this)}>
+                                <Icon name="md-menu" />
                             </Button>
-                            <Button>
-                                Groups
-                                <Icon name="md-people"/>
+                            <Title>Item View</Title>
+                            <Button transparent onPress={this.openMenu.bind(this)}>
+                                <Icon name="md-more" />
                             </Button>
-                        </FooterTab>
-                    </Footer>
-                </Container>
+                        </Header>
+                        <Content>
+                            <List>
+                                {items}
+                            </List>
+                        </Content>
+                        <View style={styles.addButton}>
+                            <Button rounded primary style={{width: 60, height: 60}}>
+                                <Icon name="md-person-add" />
+                            </Button>
+                        </View>
+                        <Footer>
+                            <FooterTab>
+                                <Button>
+                                    Items
+                                    <Icon name="md-cart"/>
+                                </Button>
+                                <Button>
+                                    Groups
+                                    <Icon name="md-people"/>
+                                </Button>
+                            </FooterTab>
+                        </Footer>
+                    </Container>
+                </MenuContext>
             </Drawer>
         )
     }
@@ -102,7 +137,7 @@ export default class MainScene extends Component {
 
 const drawerStyles = {
     drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
-    mainOverlay: { backgroundColor: 'black' },
+    mainOverlay: { backgroundColor: 'black', opacity: 0 },
     main: { paddingLeft: 3 }
 };
 
@@ -111,5 +146,10 @@ const styles = StyleSheet.create({
         position: "absolute",
         right: 25,
         bottom: 80
+    },
+    moreMenu: {
+        position: 'absolute',
+        top: 5,
+        right: 5
     }
 });

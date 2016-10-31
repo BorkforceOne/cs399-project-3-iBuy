@@ -6,14 +6,14 @@ export default class SignInScene extends Component {
     constructor(props) {
         super(props);
     }
-    onGotoAboutScene() {
+    onGotoScene(id) {
         this.props.navigator.push({
-            id: 'about'
+            id: id
         });
     }
-    onGotoRegisterScene(scene) {
-        this.props.navigator.push({
-            id: 'register'
+    onSignin() {
+        this.props.navigator.resetTo({
+            id: 'main'
         });
     }
     render() {
@@ -40,11 +40,11 @@ export default class SignInScene extends Component {
 
                     <View style={{flex: 1}}>
                         <View style={styles.buttonView}>
-                            <Button style={styles.button}>Sign In</Button>
-                            <Button style={styles.button} onPressOut={this.onGotoRegisterScene.bind(this)}>Register</Button>
+                            <Button style={styles.button} onPressOut={this.onSignin.bind(this)}>Sign In</Button>
+                            <Button style={styles.button} onPressOut={this.onGotoScene.bind(this, 'register')}>Register</Button>
                         </View>
                         <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-                            <Button transparent onPressOut={this.onGotoAboutScene.bind(this)}>About</Button>
+                            <Button transparent onPressOut={this.onGotoScene.bind(this, 'about')}>About</Button>
                         </View>
                     </View>
                 </View>
