@@ -4,7 +4,7 @@ import { Container, List, Header, Title, Content, Badge, Text, ListItem } from '
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
 
-export default class MainDrawer extends Component {
+export default class ItemFilterDrawer extends Component {
     constructor() {
         super();
         this.state = {

@@ -4,10 +4,10 @@ import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Conten
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import Drawer from 'react-native-drawer';
-import MainDrawer from '../Drawers/MainDrawer';
+import ItemFilterDrawer from '../Drawers/ItemFilterDrawer';
 import '../Utils/NumberHelpers';
 
-export default class MainScene extends Component {
+export default class ItemViewScene extends Component {
     constructor() {
         super();
         this.state = {
@@ -78,7 +78,7 @@ export default class MainScene extends Component {
                 acceptTap={true}
                 closedDrawerOffset={-3}
                 styles={drawerStyles}
-                content={<MainDrawer {...this.props}/>}
+                content={<ItemFilterDrawer {...this.props}/>}
                 elevation={15}
                 tweenHandler={(ratio) => ({
                     main: { opacity: (2-ratio/2) },
