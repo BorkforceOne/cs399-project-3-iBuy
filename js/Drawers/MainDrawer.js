@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet } from 'react-native';
-import { Container, List, ListItem, Header, Title, Content, Badge, Text } from 'native-base';
+import { StyleSheet, View } from 'react-native';
+import { Container, List, Header, Title, Content, Badge, Text, ListItem } from 'native-base';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
 
@@ -24,23 +24,44 @@ export default class MainDrawer extends Component {
     }
     render() {
 
-        let groups = this.state.groups.map((group, i) => {
+        let filters = [];
+
+        filters.push(
+            <ListItem itemDivider key={"groups-divider"}>
+                <Text>Groups</Text>
+            </ListItem>
+        );
+
+        filters = filters.concat(this.state.groups.map((group, i) => {
             return (
-                <ColorCodedListItem key={i} color={group.color}>
+                <ColorCodedListItem key={"group-" + i} color={group.color}>
                     <Text>{group.name}</Text>
                     <Badge info textStyle={{lineHeight: 20}}>{group.numberItems}</Badge>
                 </ColorCodedListItem>
             );
-        });
+        }));
+
+        filters.push(
+            <ListItem itemDivider key={"others-divider"}>
+                <Text>Other Filters</Text>
+            </ListItem>
+        );
+
+        filters.push(
+            <ListItem key="others-7days">
+                <Text>Upcoming within 7 days</Text>
+                <Badge info textStyle={{lineHeight: 20}}>2</Badge>
+            </ListItem>
+        );
 
         return (
             <Container>
-                <Header style={{height: 100}}>
-                    <Title>test</Title>
+                <Header>
+                    <Title>Item Filters</Title>
                 </Header>
                 <Content style={styles.content}>
                     <List>
-                        {groups}
+                        {filters}
                     </List>
                 </Content>
             </Container>
@@ -51,5 +72,13 @@ export default class MainDrawer extends Component {
 const styles = StyleSheet.create({
     content: {
         backgroundColor: 'white'
+    },
+    initials: {
+        position: 'absolute',
+        left: 10,
+        bottom: 20,
+        width: 20,
+        height: 20,
+        backgroundColor: 'red'
     }
 });

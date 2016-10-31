@@ -55,13 +55,14 @@ export default class MainScene extends Component {
                 type="overlay"
                 openDrawerOffset={0.2}
                 panCloseMask={0.2}
+                acceptTap={true}
                 closedDrawerOffset={-3}
                 styles={drawerStyles}
                 content={<MainDrawer {...this.props}/>}
-                elevation={10}
+                elevation={15}
                 tweenHandler={(ratio) => ({
                     main: { opacity: (2-ratio/2) },
-                    mainOverlay: { opacity:ratio/2 }
+                    mainOverlay: { opacity:ratio/1.75 }
                 })}
                 >
                 <Container>
@@ -83,7 +84,7 @@ export default class MainScene extends Component {
                     </View>
                     <Footer>
                         <FooterTab>
-                            <Button>
+                            <Button active>
                                 Items
                                 <Icon name="md-cart"/>
                             </Button>
