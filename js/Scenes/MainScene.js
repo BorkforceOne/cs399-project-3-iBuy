@@ -18,6 +18,7 @@ export default class MainScene extends Component {
                     cost: 4.00,
                     purchaser: null,
                     category: 'Household - Cleaning',
+                    due: "tomorrow",
                     color: "#f33"
                 },
                 {
@@ -26,6 +27,7 @@ export default class MainScene extends Component {
                     cost: 3.00,
                     purchaser: null,
                     category: 'Household - Maintenance',
+                    due: "in 5 days",
                     color: "#1a1"
                 }
             ],
@@ -60,9 +62,9 @@ export default class MainScene extends Component {
             return (
                 <ColorCodedListItem key={i} iconLeft color={item.color}>
                     <Icon name='md-home' />
-                    <Text>{item.name}</Text>
-                    <Text note>{(item.cost * item.quantity).toCurrency() + " (" + item.cost.toCurrency() + " ea) "}</Text>
-                    <Badge info textStyle={{lineHeight: 20}}>{item.quantity}</Badge>
+                    <Text>{item.name + " (" + item.quantity + ")"}</Text>
+                    <Text note>{"due " + item.due + "  "}</Text>
+                    <Badge info textStyle={{lineHeight: 20}}>{(item.cost * item.quantity).toCurrency()}</Badge>
                 </ColorCodedListItem>
             );
         });
@@ -118,7 +120,7 @@ export default class MainScene extends Component {
                         </View>
                         <Footer>
                             <FooterTab>
-                                <Button>
+                                <Button active>
                                     Items
                                     <Icon name="md-cart"/>
                                 </Button>
