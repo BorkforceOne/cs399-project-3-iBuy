@@ -43,8 +43,11 @@ export default class ItemViewScene extends Component {
             this.props.navigator.resetTo({
                 id: id
             });
-        }
-        else {
+        } else if (id == "group-view" || id == "item-view") {
+            this.props.navigator.replace({
+                id: id
+            });
+        } else {
             this.props.navigator.push({
                 id: id
             });
@@ -103,7 +106,7 @@ export default class ItemViewScene extends Component {
                             <Button transparent onPress={this.onShowDrawer.bind(this)}>
                                 <Icon name="md-menu" />
                             </Button>
-                            <Title>Item View</Title>
+                            <Title>Item View - Next 7 Days</Title>
                             <Button transparent onPress={this.openMenu.bind(this)}>
                                 <Icon name="md-more" />
                             </Button>
@@ -115,7 +118,7 @@ export default class ItemViewScene extends Component {
                         </Content>
                         <View style={styles.addButton}>
                             <Button rounded primary style={{width: 60, height: 60}}>
-                                <Icon name="md-person-add" />
+                                <Icon name="md-add" />
                             </Button>
                         </View>
                         <Footer>
@@ -124,7 +127,7 @@ export default class ItemViewScene extends Component {
                                     Items
                                     <Icon name="md-cart"/>
                                 </Button>
-                                <Button>
+                                <Button onPress={this.gotoScene.bind(this, "group-view")}>
                                     Groups
                                     <Icon name="md-people"/>
                                 </Button>

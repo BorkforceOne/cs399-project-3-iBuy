@@ -12,6 +12,7 @@ import SignInScene from './js/Scenes/SignInScene';
 import AboutScene from './js/Scenes/AboutScene';
 import RegisterScene from './js/Scenes/RegisterScene';
 import ItemViewScene from './js/Scenes/ItemViewScene.js';
+import GroupViewScene from './js/Scenes/GroupViewScene.js';
 
 export default class iBuy extends Component {
     constructor(props) {
@@ -77,9 +78,13 @@ export default class iBuy extends Component {
                 return (
                     <RegisterScene {...params}/>
                 );
-            case "main":
+            case "item-view":
                 return (
                     <ItemViewScene {...params}/>
+                );
+            case "group-view":
+                return (
+                    <GroupViewScene {...params}/>
                 );
             case "group-settings":
                 return (

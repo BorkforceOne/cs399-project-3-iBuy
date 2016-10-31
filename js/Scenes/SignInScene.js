@@ -13,7 +13,7 @@ export default class SignInScene extends Component {
     }
     onSignin() {
         this.props.navigator.resetTo({
-            id: 'main'
+            id: 'item-view'
         });
     }
     render() {
