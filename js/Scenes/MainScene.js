@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
-import { Container, Button, List, ListItem, Header, Title, Icon, Footer, FooterTab, Content, Badge } from 'native-base';
+import { View, TouchableHighlight, StyleSheet } from 'react-native';
+import { Container, Button, List, ListItem, Header, Title, Icon, Footer, FooterTab, Content, Badge, Text } from 'native-base';
+import '../Utils/NumberHelpers';
 
 export default class MainScene extends Component {
     constructor() {
@@ -28,8 +29,10 @@ export default class MainScene extends Component {
 
         let items = this.state.items.map((item, i) => {
             return (
-                <ListItem key={i}>
+                <ListItem key={i} iconLeft>
+                    <Icon name='md-home' />
                     <Text>{item.name}</Text>
+                    <Text note>{(item.cost * item.quantity).toCurrency() + " (" + item.cost.toCurrency() + " ea) "}</Text>
                     <Badge info textStyle={{lineHeight: 20}}>{item.quantity}</Badge>
                 </ListItem>
             );
