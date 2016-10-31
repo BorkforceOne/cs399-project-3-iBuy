@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, Navigator } from 'react-native';
+import { AppRegistry, Navigator, BackAndroid } from 'react-native';
 
 import SignInScene from './js/Scenes/SignInScene';
 import AboutScene from './js/Scenes/AboutScene';
@@ -17,6 +17,20 @@ export default class iBuy extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        // Allow back button to return to last scene
+        BackAndroid.addEventListener('hardwareBackPress', () => {
+            const routes = this._navigator.getCurrentRoutes();
+
+            if (routes.length == 1) {
+                // Close the app
+                return false;
+            }
+            this._navigator.pop();
+            return true;
+        });
+    }
+
     /**
      * Render the app
      */
@@ -24,6 +38,9 @@ export default class iBuy extends Component {
         // Simply divert the rendering to renderScene()
         return (
             <Navigator
+                ref={(ref) => {
+                    this._navigator = ref;
+                }}
                 configureScene={() => {
                     return Navigator.SceneConfigs.FadeAndroid;
                 }}
