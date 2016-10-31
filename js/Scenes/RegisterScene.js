@@ -1,29 +1,32 @@
+/**
+ * Created by Brandon Garling on 10/30/2016.
+ */
 import React, { Component, PropTypes } from 'react';
-import { Text, StyleSheet } from 'react-native';
-import { Container, Button, InputGroup, Input, List, ListItem, View } from 'native-base';
+import { View, Text, StyleSheet } from 'react-native';
+import { Container, Button, InputGroup, Input, Header, Title, Icon, List, ListItem } from 'native-base';
 
-export default class SignInScene extends Component {
+export default class RegisterScene extends Component {
     constructor(props) {
         super(props);
     }
-    onGotoAboutScene() {
-        this.props.navigator.push({
-            id: 'about'
-        });
-    }
-    onGotoRegisterScene(scene) {
-        this.props.navigator.push({
-            id: 'register'
-        });
+    onGoBack() {
+        this.props.navigator.pop();
     }
     render() {
         return (
             <Container>
+                <Header>
+                    <Button transparent onPressOut={this.onGoBack.bind(this)}>
+                        <Icon name='md-arrow-back' />
+                    </Button>
+
+                    <Title>Register</Title>
+                </Header>
+
                 <View style={styles.mainView}>
                     <View style={{flex: 1}}>
                         <Text style={styles.titleText}>GroupBuy</Text>
                     </View>
-
                     <List style={{flex: 1}}>
                         <ListItem>
                             <InputGroup>
@@ -36,16 +39,21 @@ export default class SignInScene extends Component {
                                 <Input placeholder="Password" secureTextEntry/>
                             </InputGroup>
                         </ListItem>
-                    </List>
 
-                    <View style={{flex: 1}}>
-                        <View style={styles.buttonView}>
-                            <Button style={styles.button}>Sign In</Button>
-                            <Button style={styles.button} onPressOut={this.onGotoRegisterScene.bind(this)}>Register</Button>
-                        </View>
-                        <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-                            <Button transparent onPressOut={this.onGotoAboutScene.bind(this)}>About</Button>
-                        </View>
+                        <ListItem>
+                            <InputGroup>
+                                <Input placeholder="Firstname"/>
+                            </InputGroup>
+                        </ListItem>
+
+                        <ListItem>
+                            <InputGroup>
+                                <Input placeholder="Lastname"/>
+                            </InputGroup>
+                        </ListItem>
+                    </List>
+                    <View style={styles.buttonView}>
+                        <Button style={styles.button}>Register</Button>
                     </View>
                 </View>
             </Container>
@@ -54,7 +62,7 @@ export default class SignInScene extends Component {
 }
 
 // Set up proptypes
-SignInScene.propTypes = {
+RegisterScene.propTypes = {
     navigator: PropTypes.object.isRequired,
     route: PropTypes.object.isRequired
 };
@@ -65,12 +73,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingTop: 50
     },
-    aboutText: {
-        textAlign: 'center'
-    },
     mainView: {
         flex: 1,
-        flexDirection: 'column',
         justifyContent: 'space-between'
     },
     button: {

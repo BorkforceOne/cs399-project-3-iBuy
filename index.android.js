@@ -6,8 +6,10 @@
 
 import React, { Component } from 'react';
 import { AppRegistry, Navigator } from 'react-native';
-import SignInScene from './js/Scenes/SignInScene.js';
+
+import SignInScene from './js/Scenes/SignInScene';
 import AboutScene from './js/Scenes/AboutScene';
+import RegisterScene from './js/Scenes/RegisterScene';
 
 export default class iBuy extends Component {
     constructor(props) {
@@ -51,7 +53,11 @@ export default class iBuy extends Component {
             case "about":
                 return (
                     <AboutScene {...params}/>
-                )
+                );
+            case "register":
+                return (
+                    <RegisterScene {...params}/>
+                );
         }
     }
 }
