@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Container, Button, InputGroup, Input } from 'native-base';
 
 export default class SignInScene extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
+    }
+    onGotoAboutScene() {
+        this.props.navigator.push({
+            id: 'about'
+        })
     }
     render() {
         return (
@@ -14,23 +18,25 @@ export default class SignInScene extends Component {
                     <View style={{flex: 1}}>
                         <Text style={styles.titleText}>GroupBuy</Text>
                     </View>
-                    <View style={{flex: 1}}>
-                        <InputGroup>
-                            <Input placeholder="Email"/>
-                        </InputGroup>
-                        <InputGroup>
-                            <Input placeholder="Password" secureTextEntry/>
-                        </InputGroup>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <View style={{flex: 0.1}}/>
+                        <View style={{flex: 0.8}}>
+                            <InputGroup>
+                                <Input placeholder="Email"/>
+                            </InputGroup>
+                            <InputGroup>
+                                <Input placeholder="Password" secureTextEntry/>
+                            </InputGroup>
+                        </View>
+                        <View style={{flex: 0.1}}/>
                     </View>
                     <View style={{flex: 1}}>
                         <View style={styles.buttonView}>
                             <Button style={styles.button}>Sign In</Button>
                             <Button style={styles.button}>Register</Button>
                         </View>
-                        <View style={{flex: 2}}>
-                            <TouchableHighlight>
-                                <Text style={styles.aboutText}>About</Text>
-                            </TouchableHighlight>
+                        <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                            <Button transparent onPress={this.onGotoAboutScene.bind(this)}>About</Button>
                         </View>
                     </View>
                 </View>
@@ -48,7 +54,8 @@ SignInScene.propTypes = {
 const styles = StyleSheet.create({
     titleText: {
         fontSize: 50,
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingTop: 50
     },
     aboutText: {
         textAlign: 'center'
