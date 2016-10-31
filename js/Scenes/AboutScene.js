@@ -8,7 +8,6 @@ import { Container, Button, Header, Icon, Title } from 'native-base';
 export default class AboutScene extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
     }
     onGoBack() {
         this.props.navigator.pop();
