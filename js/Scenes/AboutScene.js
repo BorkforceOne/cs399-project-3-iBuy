@@ -26,7 +26,10 @@ export default class AboutScene extends Component {
 
                 <View style={styles.mainView}>
                     <Text>
-                        This is some text
+                        GroupBuy lets you manage your grocery list between groups of people easily and efficiently!
+                    </Text>
+                    <Text>
+                        Created by: Harrison Lambeth and Brandon Garling
                     </Text>
                 </View>
             </Container>
@@ -44,6 +47,7 @@ const styles = StyleSheet.create({
     mainView: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        padding: 20
     }
 });
