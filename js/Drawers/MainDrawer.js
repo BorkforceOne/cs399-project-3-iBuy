@@ -1,42 +1,35 @@
 import React, { Component, PropTypes } from 'react';
-import { View, TouchableHighlight, StyleSheet } from 'react-native';
-import { Container, Button, List, ListItem, Header, Title, Icon, Footer, FooterTab, Content, Badge, Text, Thumbnail } from 'native-base';
-import Drawer from 'react-native-drawer';
+import { StyleSheet } from 'react-native';
+import { Container, List, ListItem, Header, Title, Content, Badge, Text } from 'native-base';
+import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
 
 export default class MainDrawer extends Component {
     constructor() {
         super();
         this.state = {
-            items: [
+            groups: [
                 {
-                    name: "Paper Towels",
-                    quantity: 5,
-                    cost: 4.00,
-                    purchaser: null,
-                    category: 'Household - Cleaning'
+                    name: "Group 1",
+                    color: "#f33",
+                    numberItems: 4
                 },
                 {
-                    name: "Light Bulbs",
-                    quantity: 2,
-                    cost: 3.00,
-                    purchaser: null,
-                    category: 'Household - Maintenance'
+                    name: "Group 2",
+                    color: "#1a1",
+                    numberItems: 6
                 }
-            ],
-            showDrawer: false
+            ]
         }
     }
     render() {
 
-        let items = this.state.items.map((item, i) => {
+        let groups = this.state.groups.map((group, i) => {
             return (
-                <ListItem key={i} iconLeft>
-                    <Icon name='md-home' />
-                    <Text>{item.name}</Text>
-                    <Text note>{(item.cost * item.quantity).toCurrency() + " (" + item.cost.toCurrency() + " ea) "}</Text>
-                    <Badge info textStyle={{lineHeight: 20}}>{item.quantity}</Badge>
-                </ListItem>
+                <ColorCodedListItem key={i} color={group.color}>
+                    <Text>{group.name}</Text>
+                    <Badge info textStyle={{lineHeight: 20}}>{group.numberItems}</Badge>
+                </ColorCodedListItem>
             );
         });
 
@@ -47,7 +40,7 @@ export default class MainDrawer extends Component {
                 </Header>
                 <Content style={styles.content}>
                     <List>
-                        {items}
+                        {groups}
                     </List>
                 </Content>
             </Container>

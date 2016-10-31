@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { View, TouchableHighlight, StyleSheet, Text as ReactText } from 'react-native';
-import { Container, Button, List, ListItem, Header, Title, Icon, Footer, FooterTab, Content, Badge, Text } from 'native-base';
+import { View, StyleSheet } from 'react-native';
+import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Content, Badge, Text } from 'native-base';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
-
+import ColorCodedListItem from '../Components/ColorCodedListItem';
 import Drawer from 'react-native-drawer';
 import MainDrawer from '../Drawers/MainDrawer';
 import '../Utils/NumberHelpers';
@@ -17,14 +17,16 @@ export default class MainScene extends Component {
                     quantity: 5,
                     cost: 4.00,
                     purchaser: null,
-                    category: 'Household - Cleaning'
+                    category: 'Household - Cleaning',
+                    color: "#f33"
                 },
                 {
                     name: "Light Bulbs",
                     quantity: 2,
                     cost: 3.00,
                     purchaser: null,
-                    category: 'Household - Maintenance'
+                    category: 'Household - Maintenance',
+                    color: "#1a1"
                 }
             ],
             showDrawer: false
@@ -56,12 +58,12 @@ export default class MainScene extends Component {
 
         let items = this.state.items.map((item, i) => {
             return (
-                <ListItem key={i} iconLeft>
+                <ColorCodedListItem key={i} iconLeft color={item.color}>
                     <Icon name='md-home' />
                     <Text>{item.name}</Text>
                     <Text note>{(item.cost * item.quantity).toCurrency() + " (" + item.cost.toCurrency() + " ea) "}</Text>
                     <Badge info textStyle={{lineHeight: 20}}>{item.quantity}</Badge>
-                </ListItem>
+                </ColorCodedListItem>
             );
         });
 
@@ -109,7 +111,7 @@ export default class MainScene extends Component {
                             </List>
                         </Content>
                         <View style={styles.addButton}>
-                            <Button rounded primary textStyle={{lineHeight: 20}}>
+                            <Button rounded primary style={{width: 60, height: 60}}>
                                 <Icon name="md-person-add" />
                             </Button>
                         </View>
