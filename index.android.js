@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { AppRegistry, Navigator, BackAndroid } from 'react-native';
 
 import GroupSettingsScene from './js/Scenes/GroupSettingsScene';
+import ItemSettingsScene from './js/Scenes/ItemSettingsScene';
 import SignInScene from './js/Scenes/SignInScene';
 import AboutScene from './js/Scenes/AboutScene';
 import RegisterScene from './js/Scenes/RegisterScene';
@@ -89,6 +90,10 @@ export default class iBuy extends Component {
             case "group-settings":
                 return (
                     <GroupSettingsScene {...params}/>
+                );
+            case "item-settings":
+                return (
+                    <ItemSettingsScene {...params}/>
                 );
         }
     }

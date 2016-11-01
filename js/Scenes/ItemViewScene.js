@@ -63,7 +63,7 @@ export default class ItemViewScene extends Component {
 
         let items = this.state.items.map((item, i) => {
             return (
-                <ColorCodedListItem key={i} iconLeft color={item.color}>
+                <ColorCodedListItem key={i} iconLeft color={item.color} button onPress={this.gotoScene.bind(this, "item-settings")}>
                     <Icon name='md-home' />
                     <Text>{item.name + " (" + item.quantity + ")"}</Text>
                     <Text note>{"due " + item.due + "  "}</Text>
