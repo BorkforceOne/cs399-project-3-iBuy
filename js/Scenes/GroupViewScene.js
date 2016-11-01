@@ -47,7 +47,7 @@ export default class GroupViewScene extends Component {
 
         let items = this.state.groups.map((item, i) => {
             return (
-                <ColorCodedListItem key={i} color={item.color}>
+                <ColorCodedListItem key={i} color={item.color} button onPress={this.gotoScene.bind(this, "group-settings")}>
                     <Text>{item.name}</Text>
                     <Text note>{item.totalMembers + " members"}</Text>
                 </ColorCodedListItem>
