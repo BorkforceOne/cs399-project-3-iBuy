@@ -1,34 +1,63 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
+import { ADD_ITEM, ADD_GROUP, ADD_USER,
+         REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER} from './ActionTypes';
 
-let nextItemId = -1;
+/**
+ *
+ * @param state
+ * @param {{type: String, item: Item}} action
+ * @returns {*}
+ */
 export const itemReducer = function (state = {}, action) {
-   if (action.type === 'ADD_ITEM') {
+   if (action.type === ADD_ITEM) {
        let newState = _.cloneDeep(state);
-       action.item.id = nextItemId++;
-       newState[action.item.id] = action.item;
+       newState[action.item.Id] = action.item;
+       return newState;
+   }
+   if (action.type === REMOVE_ITEM) {
+       let newState = _.cloneDeep(state);
+       delete newState[action.Id];
        return newState;
    }
    return state;
 };
 
-let nextGroupId = -1;
+/**
+ *
+ * @param state
+ * @param {{type: String, group: Group}} action
+ * @returns {*}
+ */
 export const groupReducer = function (state = {}, action) {
-    if (action.type === 'ADD_GROUP') {
+    if (action.type === ADD_GROUP) {
         let newState = _.cloneDeep(state);
-        action.group.id = nextGroupId++;
-        newState[action.group.id] = action.group;
+        newState[action.group.Id] = action.group;
+        return newState;
+    }
+    if (action.type === REMOVE_GROUP) {
+        let newState = _.cloneDeep(state);
+        delete newState[action.Id];
         return newState;
     }
     return state;
 };
 
-let nextUserId = -1;
+/**
+ *
+ * @param state
+ * @param {{type: String, user: User}} action
+ * @returns {*}
+ */
 export const userReducer = function (state = {}, action) {
-    if (action.type === 'ADD_USER') {
+    if (action.type === ADD_USER) {
         let newState = _.cloneDeep(state);
-        action.user.id = nextUserId--;
-        newState[action.user.id] = action.user;
+        newState[action.user.Id] = action.user;
+        return newState;
+    }
+    if (action.type === REMOVE_USER) {
+        let newState = _.cloneDeep(state);
+        delete newState[action.Id];
         return newState;
     }
     return state;
