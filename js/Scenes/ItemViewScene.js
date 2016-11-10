@@ -8,8 +8,9 @@ import Moment from 'moment';
 import Time from '../Utils/Time';
 import ItemFilterDrawer from '../Drawers/ItemFilterDrawer';
 import '../Utils/NumberHelpers';
+import { connect } from 'react-redux';
 
-export default class ItemViewScene extends Component {
+class ItemViewScene extends Component {
     constructor() {
         super();
         this.state = {
@@ -63,6 +64,7 @@ export default class ItemViewScene extends Component {
     }
     render() {
 
+        console.log(this.props.items);
         let items = this.state.items.map((item, i) => {
             return (
                 <ColorCodedListItem key={i} iconLeft color={item.color} button onPress={this.gotoScene.bind(this, "item-settings")}>
@@ -142,6 +144,13 @@ export default class ItemViewScene extends Component {
     }
 }
 
+// Set up proptypes
+ItemViewScene.propTypes = {
+    navigator: PropTypes.object.isRequired,
+    route: PropTypes.object.isRequired,
+    items: PropTypes.object.isRequired
+};
+
 const drawerStyles = {
     drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
     mainOverlay: { backgroundColor: 'black', opacity: 0 },
@@ -160,3 +169,11 @@ const styles = StyleSheet.create({
         right: 5
     }
 });
+
+const mapStateToProps = function (store) {
+    return {
+        items: store.itemState
+    };
+};
+
+export default connect(mapStateToProps)(ItemViewScene);

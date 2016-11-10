@@ -14,6 +14,8 @@ import AboutScene from './js/Scenes/AboutScene';
 import RegisterScene from './js/Scenes/RegisterScene';
 import ItemViewScene from './js/Scenes/ItemViewScene.js';
 import GroupViewScene from './js/Scenes/GroupViewScene.js';
+import { Provider } from 'react-redux'
+import Store from './js/Store';
 
 export default class iBuy extends Component {
     constructor(props) {
@@ -21,6 +23,13 @@ export default class iBuy extends Component {
     }
 
     componentDidMount() {
+        Store.dispatch({
+            type: 'ADD_ITEM',
+            item: {
+                name: 'Paper Towels'
+            }
+        });
+
         // Allow back button to return to last scene
         BackAndroid.addEventListener('hardwareBackPress', () => {
             const routes = this._navigator.getCurrentRoutes();
@@ -40,16 +49,18 @@ export default class iBuy extends Component {
     render() {
         // Simply divert the rendering to renderScene()
         return (
-            <Navigator
-                ref={(ref) => {
-                    this._navigator = ref;
-                }}
-                configureScene={() => {
-                    return Navigator.SceneConfigs.FadeAndroid;
-                }}
-                initialRoute={{id: 'sign-in'}}
-                renderScene={this.renderScene.bind(this)}
-            />
+            <Provider store={Store}>
+                <Navigator
+                    ref={(ref) => {
+                        this._navigator = ref;
+                    }}
+                    configureScene={() => {
+                        return Navigator.SceneConfigs.FadeAndroid;
+                    }}
+                    initialRoute={{id: 'sign-in'}}
+                    renderScene={this.renderScene.bind(this)}
+                />
+            </Provider>
         );
     }
 
