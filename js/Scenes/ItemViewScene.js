@@ -4,6 +4,8 @@ import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Conten
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import Drawer from 'react-native-drawer';
+import Moment from 'moment';
+import Time from '../Utils/Time';
 import ItemFilterDrawer from '../Drawers/ItemFilterDrawer';
 import '../Utils/NumberHelpers';
 
@@ -18,7 +20,7 @@ export default class ItemViewScene extends Component {
                     cost: 4.00,
                     purchaser: null,
                     category: 'Household - Cleaning',
-                    due: "tomorrow",
+                    due: Moment(),
                     color: "#f33"
                 },
                 {
@@ -27,7 +29,7 @@ export default class ItemViewScene extends Component {
                     cost: 3.00,
                     purchaser: null,
                     category: 'Household - Maintenance',
-                    due: "in 5 days",
+                    due: Moment(),
                     color: "#1a1"
                 }
             ],
@@ -66,7 +68,7 @@ export default class ItemViewScene extends Component {
                 <ColorCodedListItem key={i} iconLeft color={item.color} button onPress={this.gotoScene.bind(this, "item-settings")}>
                     <Icon name='md-home' />
                     <Text>{item.name + " (" + item.quantity + ")"}</Text>
-                    <Text note>{"due " + item.due + "  "}</Text>
+                    <Text note>{"due " + Time.getTimeToNow(item.due) + "  "}</Text>
                     <Badge info textStyle={{lineHeight: 20}}>{(item.cost * item.quantity).toCurrency()}</Badge>
                 </ColorCodedListItem>
             );
