@@ -59,7 +59,7 @@ class ItemSettingsScene extends Component {
                         </ListItem>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="ITEM COST" value={item.Cost.toCurrency()} />
+                                <Input inlineLabel label="ITEM COST" value={item.Cost} onChange={this.onInputChange.bind(this, 'Cost')} />
                             </InputGroup>
                         </ListItem>
                         <ListItem>
