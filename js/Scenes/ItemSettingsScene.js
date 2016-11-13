@@ -1,27 +1,31 @@
 import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem} from 'native-base';
+import { connect } from 'react-redux';
+import DateTimePicker from '../Components/DateTimePicker';
+import Time from '../Utils/Time';
+import Actions from '../Store/Actions';
+import Moment from 'moment';
 
-export default class ItemSettingsScene extends Component {
+class ItemSettingsScene extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            item: {
-                name: "Paper Towels",
-                quantity: 5,
-                cost: 4.00,
-                purchaser: null,
-                category: 'Household - Cleaning',
-                due: "Tomorrow",
-                color: "#f33"
-            }
-        }
     }
     onGoBack() {
         this.props.navigator.pop();
     }
+    onInputChange(field, event) {
+        let item = this.props.items[this.props.route.itemId];
+        item[field] = event.nativeEvent.text;
+        this.props.dispatch(Actions.updateItem(item));
+    }
+    onDatetimeChanged(field, event) {
+        let item = this.props.items[this.props.route.itemId];
+        item[field] = Moment(event).toISOString();
+        this.props.dispatch(Actions.updateItem(item));
+    }
     render() {
-
+        let item = this.props.items[this.props.route.itemId];
         return (
             <Container>
                 <Header>
@@ -37,32 +41,30 @@ export default class ItemSettingsScene extends Component {
                     <List>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="NAME" value={this.state.item.name} />
+                                <Input inlineLabel label="NAME" value={item.Name} onChange={this.onInputChange.bind(this, 'Name')} />
                             </InputGroup>
                         </ListItem>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="CATEGORY" value={this.state.item.category} />
+                                <Input inlineLabel label="CATEGORY" value={item.Category} onChange={this.onInputChange.bind(this, 'Category')} />
+                            </InputGroup>
+                        </ListItem>
+                        <ListItem>
+                            <DateTimePicker label="DUE" date={item.Due} mode={'datetime'} onChange={this.onDatetimeChanged.bind(this, 'Due')}/>
+                        </ListItem>
+                        <ListItem>
+                            <InputGroup>
+                                <Input inlineLabel label="QUANTITY" value={item.Quantity.toString()} onChange={this.onInputChange.bind(this, 'Quantity')}/>
                             </InputGroup>
                         </ListItem>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="DUE DATE" value={this.state.item.due} />
-                            </InputGroup>
-                        </ListItem>
-                        <ListItem>
-                            <InputGroup>
-                                <Input inlineLabel label="QUANTITY" value={this.state.item.quantity.toString()} />
-                            </InputGroup>
-                        </ListItem>
-                        <ListItem>
-                            <InputGroup>
-                                <Input inlineLabel label="ITEM COST" value={this.state.item.cost.toCurrency()} />
+                                <Input inlineLabel label="ITEM COST" value={item.Cost} onChange={this.onInputChange.bind(this, 'Cost')} />
                             </InputGroup>
                         </ListItem>
                         <ListItem>
                             <InputGroup disabled>
-                                <Input inlineLabel label="TOTAL COST" value={(this.state.item.cost*this.state.item.quantity).toCurrency()} />
+                                <Input inlineLabel label="TOTAL COST" value={(item.Cost*item.Quantity).toCurrency()} />
                             </InputGroup>
                         </ListItem>
                     </List>
@@ -76,9 +78,19 @@ export default class ItemSettingsScene extends Component {
 // Set up proptypes
 ItemSettingsScene.propTypes = {
     navigator: PropTypes.object.isRequired,
-    route: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired,
+    route: PropTypes.object.isRequired,
+    items: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
 
 });
+
+const mapStateToProps = function (store) {
+    return {
+        items: store.itemState
+    };
+};
+
+export default connect(mapStateToProps)(ItemSettingsScene);

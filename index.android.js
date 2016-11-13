@@ -14,6 +14,8 @@ import AboutScene from './js/Scenes/AboutScene';
 import RegisterScene from './js/Scenes/RegisterScene';
 import ItemViewScene from './js/Scenes/ItemViewScene.js';
 import GroupViewScene from './js/Scenes/GroupViewScene.js';
+import { Provider } from 'react-redux'
+import Store from './js/Store';
 
 export default class iBuy extends Component {
     constructor(props) {
@@ -40,16 +42,18 @@ export default class iBuy extends Component {
     render() {
         // Simply divert the rendering to renderScene()
         return (
-            <Navigator
-                ref={(ref) => {
-                    this._navigator = ref;
-                }}
-                configureScene={() => {
-                    return Navigator.SceneConfigs.FadeAndroid;
-                }}
-                initialRoute={{id: 'sign-in'}}
-                renderScene={this.renderScene.bind(this)}
-            />
+            <Provider store={Store}>
+                <Navigator
+                    ref={(ref) => {
+                        this._navigator = ref;
+                    }}
+                    configureScene={() => {
+                        return Navigator.SceneConfigs.FadeAndroid;
+                    }}
+                    initialRoute={{id: 'sign-in'}}
+                    renderScene={this.renderScene.bind(this)}
+                />
+            </Provider>
         );
     }
 

@@ -4,33 +4,17 @@ import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Conten
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import Drawer from 'react-native-drawer';
+import Time from '../Utils/Time';
 import ItemFilterDrawer from '../Drawers/ItemFilterDrawer';
 import '../Utils/NumberHelpers';
+import { connect } from 'react-redux';
+import Actions from '../Store/Actions';
+import Item from '../Models/Item';
 
-export default class ItemViewScene extends Component {
+class ItemViewScene extends Component {
     constructor() {
         super();
         this.state = {
-            items: [
-                {
-                    name: "Paper Towels",
-                    quantity: 5,
-                    cost: 4.00,
-                    purchaser: null,
-                    category: 'Household - Cleaning',
-                    due: "tomorrow",
-                    color: "#f33"
-                },
-                {
-                    name: "Light Bulbs",
-                    quantity: 2,
-                    cost: 3.00,
-                    purchaser: null,
-                    category: 'Household - Maintenance',
-                    due: "in 5 days",
-                    color: "#1a1"
-                }
-            ],
             showDrawer: false
         }
     }
@@ -38,20 +22,31 @@ export default class ItemViewScene extends Component {
         this.refs.MenuContext.openMenu("menu");
     }
 
-    gotoScene(id) {
+    gotoScene(id, entityId) {
         if (id == "sign-in") {
             this.props.navigator.resetTo({
                 id: id
             });
+        } else if (id == "item-settings") {
+            this.props.navigator.push({
+                id: id,
+                itemId: entityId
+            });
         } else if (id == "group-view" || id == "item-view") {
             this.props.navigator.replace({
-                id: id
+                id: id,
             });
         } else {
             this.props.navigator.push({
                 id: id
             });
         }
+    }
+    onAddItem() {
+        let item = new Item();
+        this.props.dispatch(Actions.addItem(item));
+
+        this.gotoScene("item-settings", item.Id);
     }
 
     onShowDrawer() {
@@ -61,16 +56,18 @@ export default class ItemViewScene extends Component {
     }
     render() {
 
-        let items = this.state.items.map((item, i) => {
-            return (
-                <ColorCodedListItem key={i} iconLeft color={item.color} button onPress={this.gotoScene.bind(this, "item-settings")}>
+        let items = [];
+        for (let id in this.props.items) {
+            let item = this.props.items[id];
+            items.push(
+                <ColorCodedListItem key={id} iconLeft color={item.Color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
                     <Icon name='md-home' />
-                    <Text>{item.name + " (" + item.quantity + ")"}</Text>
-                    <Text note>{"due " + item.due + "  "}</Text>
-                    <Badge info textStyle={{lineHeight: 20}}>{(item.cost * item.quantity).toCurrency()}</Badge>
+                    <Text>{item.Name + " (" + item.Quantity + ")"}</Text>
+                    <Text note>{"due " + Time.getTimeToNow(item.Due) + "  "}</Text>
+                    <Badge info textStyle={{lineHeight: 20}}>{(item.Cost * item.Quantity).toCurrency()}</Badge>
                 </ColorCodedListItem>
             );
-        });
+        }
 
         return (
             <Drawer
@@ -117,7 +114,7 @@ export default class ItemViewScene extends Component {
                             </List>
                         </Content>
                         <View style={styles.addButton}>
-                            <Button rounded primary style={{width: 60, height: 60}}>
+                            <Button rounded primary style={{width: 60, height: 60}} onPress={this.onAddItem.bind(this)}>
                                 <Icon name="md-add" />
                             </Button>
                         </View>
@@ -140,6 +137,14 @@ export default class ItemViewScene extends Component {
     }
 }
 
+// Set up proptypes
+ItemViewScene.propTypes = {
+    navigator: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    route: PropTypes.object.isRequired,
+    items: PropTypes.object.isRequired
+};
+
 const drawerStyles = {
     drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
     mainOverlay: { backgroundColor: 'black', opacity: 0 },
@@ -158,3 +163,11 @@ const styles = StyleSheet.create({
         right: 5
     }
 });
+
+const mapStateToProps = function (store) {
+    return {
+        items: store.itemState
+    };
+};
+
+export default connect(mapStateToProps)(ItemViewScene);
