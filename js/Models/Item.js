@@ -12,7 +12,7 @@ export default class Item {
     Quantity = 1;
     Cost = 1;
     Category = "";
-    Due = Moment();
+    Due = Moment().toISOString();
     Color = "#00f";
 
     constructor(id) {

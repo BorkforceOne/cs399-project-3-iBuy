@@ -2,8 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem} from 'native-base';
 import { connect } from 'react-redux';
+import DateTimePicker from '../Components/DateTimePicker';
 import Time from '../Utils/Time';
 import Actions from '../Store/Actions';
+import Moment from 'moment';
 
 class ItemSettingsScene extends Component {
     constructor(props) {
@@ -15,6 +17,11 @@ class ItemSettingsScene extends Component {
     onInputChange(field, event) {
         let item = this.props.items[this.props.route.itemId];
         item[field] = event.nativeEvent.text;
+        this.props.dispatch(Actions.updateItem(item));
+    }
+    onDatetimeChanged(field, event) {
+        let item = this.props.items[this.props.route.itemId];
+        item[field] = Moment(event).toISOString();
         this.props.dispatch(Actions.updateItem(item));
     }
     render() {
@@ -43,9 +50,7 @@ class ItemSettingsScene extends Component {
                             </InputGroup>
                         </ListItem>
                         <ListItem>
-                            <InputGroup>
-                                <Input inlineLabel label="DUE DATE" value={Time.getTimeToNow(item.Due)} />
-                            </InputGroup>
+                            <DateTimePicker label="DUE" date={item.Due} mode={'datetime'} onChange={this.onDatetimeChanged.bind(this, 'Due')}/>
                         </ListItem>
                         <ListItem>
                             <InputGroup>
