@@ -16,8 +16,6 @@ import ItemViewScene from './js/Scenes/ItemViewScene.js';
 import GroupViewScene from './js/Scenes/GroupViewScene.js';
 import { Provider } from 'react-redux'
 import Store from './js/Store';
-import Actions from './js/Store/Actions';
-import Item from './js/Models/Item';
 
 export default class iBuy extends Component {
     constructor(props) {
@@ -25,13 +23,6 @@ export default class iBuy extends Component {
     }
 
     componentDidMount() {
-        let item = new Item();
-        item.Name = "Damn son";
-
-        Store.dispatch(
-            Actions.addItem(item)
-        );
-
         // Allow back button to return to last scene
         BackAndroid.addEventListener('hardwareBackPress', () => {
             const routes = this._navigator.getCurrentRoutes();
