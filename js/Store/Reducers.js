@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
 import { ADD_ITEM, ADD_GROUP, ADD_USER,
-         REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER} from './ActionTypes';
+         REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER,
+         UPDATE_ITEM } from './ActionTypes';
 
 /**
  *
@@ -10,17 +11,19 @@ import { ADD_ITEM, ADD_GROUP, ADD_USER,
  * @returns {*}
  */
 export const itemReducer = function (state = {}, action) {
-   if (action.type === ADD_ITEM) {
-       let newState = _.cloneDeep(state);
-       newState[action.item.Id] = action.item;
-       return newState;
-   }
-   if (action.type === REMOVE_ITEM) {
-       let newState = _.cloneDeep(state);
-       delete newState[action.Id];
-       return newState;
-   }
-   return state;
+    let newState = _.cloneDeep(state);
+    switch (action.type) {
+        case ADD_ITEM:
+            newState[action.item.Id] = action.item;
+            return newState;
+        case REMOVE_ITEM:
+            delete newState[action.Id];
+            return newState;
+        case UPDATE_ITEM:
+            newState[action.item.Id] = _.cloneDeep(action.item);
+            return newState;
+    }
+    return state;
 };
 
 /**

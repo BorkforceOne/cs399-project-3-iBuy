@@ -1,9 +1,8 @@
 import { ADD_ITEM, ADD_GROUP, ADD_USER,
-    REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER} from './ActionTypes';
+    REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER,
+    UPDATE_ITEM } from './ActionTypes';
 
-let nextItemId = -1;
-export function addItem(item, id=nextItemId--) {
-    item.Id = id;
+export function addItem(item) {
     return {
         type: ADD_ITEM,
         item: item
@@ -49,12 +48,21 @@ export function removeUser(id) {
     }
 }
 
+export function updateItem(updatedEntity) {
+    return {
+        type: UPDATE_ITEM,
+        item: updatedEntity
+    }
+}
+
+
 export default Reducers = {
     addItem: addItem,
     addUser: addUser,
     addGroup: addGroup,
     removeItem: removeItem,
     removeGroup: removeGroup,
-    removeUser: removeUser
+    removeUser: removeUser,
+    updateItem: updateItem
 };
 
