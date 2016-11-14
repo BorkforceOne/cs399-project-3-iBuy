@@ -4,24 +4,11 @@ import { Container, Button, List, Header, Title, Icon, Footer, FooterTab, Conten
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
+import {connect} from 'react-redux';
 
-export default class GroupViewScene extends Component {
+class GroupViewScene extends Component {
     constructor() {
         super();
-        this.state = {
-            groups: [
-                {
-                    name: "Home",
-                    color: "#f33",
-                    totalMembers: 2
-                },
-                {
-                    name: "Work",
-                    color: "#1a1",
-                    totalMembers: 8
-                }
-            ]
-        }
     }
     openMenu() {
         this.refs.MenuContext.openMenu("menu");
@@ -45,14 +32,16 @@ export default class GroupViewScene extends Component {
 
     render() {
 
-        let items = this.state.groups.map((item, i) => {
-            return (
+        let items = [];
+        for (let id in this.props.groups) {
+            let item = this.props.items[id];
+            items.push(
                 <ColorCodedListItem key={i} color={item.color} button onPress={this.gotoScene.bind(this, "group-settings")}>
                     <Text>{item.name}</Text>
                     <Text note>{item.totalMembers + " members"}</Text>
                 </ColorCodedListItem>
             );
-        });
+        }
 
         return (
             <MenuContext style={{ flex: 1 }} ref="MenuContext">
@@ -124,3 +113,11 @@ const styles = StyleSheet.create({
         right: 5
     }
 });
+
+const mapStateToProps = function(store) {
+    return {
+        groups: store.groupState
+    };
+};
+
+export default connect(mapStateToProps)(GroupViewScene);
