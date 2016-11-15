@@ -3,24 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import { Container, List, Header, Title, Content, Badge, Text, ListItem } from 'native-base';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
+import { connect } from 'react-redux';
+import Selectors from '../Store/Selectors';
 
-export default class ItemFilterDrawer extends Component {
+class ItemFilterDrawer extends Component {
     constructor() {
         super();
-        this.state = {
-            groups: [
-                {
-                    name: "Group 1",
-                    color: "#f33",
-                    numberItems: 4
-                },
-                {
-                    name: "Group 2",
-                    color: "#1a1",
-                    numberItems: 6
-                }
-            ]
-        }
     }
     render() {
 
@@ -32,14 +20,15 @@ export default class ItemFilterDrawer extends Component {
             </ListItem>
         );
 
-        filters = filters.concat(this.state.groups.map((group, i) => {
-            return (
-                <ColorCodedListItem key={"group-" + i} color={group.color}>
-                    <Text>{group.name}</Text>
-                    <Badge info textStyle={{lineHeight: 20}}>{group.numberItems}</Badge>
+        for (let id in this.props.groups) {
+            let group = this.props.groups[id];
+            filters.push(
+                <ColorCodedListItem key={"group-" + id} color={group.Color}>
+                    <Text>{group.Name}</Text>
+                    <Badge info textStyle={{lineHeight: 20}}>{group.ItemIds.length}</Badge>
                 </ColorCodedListItem>
             );
-        }));
+        }
 
         filters.push(
             <ListItem itemDivider key={"others-divider"}>
@@ -82,3 +71,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'red'
     }
 });
+
+const mapStateToProps = function(state) {
+    return {
+        groups: Selectors.getGroups(state)
+    };
+};
+
+export default connect(mapStateToProps)(ItemFilterDrawer);
