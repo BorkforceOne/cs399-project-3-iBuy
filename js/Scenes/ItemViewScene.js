@@ -10,6 +10,8 @@ import '../Utils/NumberHelpers';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
 import Item from '../Models/Item';
+import Selectors from '../Store/Selectors';
+import _ from 'lodash';
 
 class ItemViewScene extends Component {
     constructor() {
@@ -56,6 +58,13 @@ class ItemViewScene extends Component {
             showDrawer: true
         })
     }
+
+    onFilterChanged(filter) {
+        let newRoute = _.cloneDeep(this.props.route);
+        newRoute.filter = _.cloneDeep(filter);
+        this.props.navigator.replace(newRoute);
+    }
+
     render() {
 
         let items = [];
@@ -71,6 +80,8 @@ class ItemViewScene extends Component {
             );
         }
 
+        let filterTitle = (this.props.route.filter && this.props.route.filter.Title) ? this.props.route.filter.Title : "All Items";
+
         return (
             <Drawer
                 open={this.state.showDrawer}
@@ -80,7 +91,7 @@ class ItemViewScene extends Component {
                 acceptTap={true}
                 closedDrawerOffset={-3}
                 styles={drawerStyles}
-                content={<ItemFilterDrawer {...this.props}/>}
+                content={<ItemFilterDrawer {...this.props} onFilterSelected={this.onFilterChanged.bind(this)}/>}
                 elevation={15}
                 tweenHandler={(ratio) => ({
                     main: { opacity: (2-ratio/2) },
@@ -105,7 +116,7 @@ class ItemViewScene extends Component {
                             <Button transparent onPress={this.onShowDrawer.bind(this)}>
                                 <Icon name="md-menu" />
                             </Button>
-                            <Title>Item View - Next 7 Days</Title>
+                            <Title>Item View - {filterTitle}</Title>
                             <Button transparent onPress={this.openMenu.bind(this)}>
                                 <Icon name="md-more" />
                             </Button>
@@ -166,10 +177,14 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = function (store) {
-    return {
-        items: store.itemState
+const makeMapStateToProps = () => {
+    const getItemsFromFilter = Selectors.makeGetItemsFromFilter();
+    const mapStateToProps = (state, props) => {
+        return {
+            items: getItemsFromFilter(state, props)
+        };
     };
+    return mapStateToProps;
 };
 
-export default connect(mapStateToProps)(ItemViewScene);
+export default connect(makeMapStateToProps)(ItemViewScene);

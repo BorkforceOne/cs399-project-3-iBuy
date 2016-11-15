@@ -7,8 +7,28 @@ import { connect } from 'react-redux';
 import Selectors from '../Store/Selectors';
 
 class ItemFilterDrawer extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+    }
+    onDateFilterSelected(range) {
+        this.props.onFilterSelected({
+            Type: "BY_RANGE",
+            Range: range,
+            Title: "Last 7 Days"
+        });
+    }
+    onGroupFilterSelected(groupId) {
+        this.props.onFilterSelected({
+            Type: "BY_GROUP",
+            GroupId: groupId,
+            Title: this.props.groups[groupId].Name
+        });
+    }
+    onAllFilterSelected() {
+        this.props.onFilterSelected({
+            Type: "ALL",
+            Title: "All Items"
+        });
     }
     render() {
 
@@ -23,7 +43,8 @@ class ItemFilterDrawer extends Component {
         for (let id in this.props.groups) {
             let group = this.props.groups[id];
             filters.push(
-                <ColorCodedListItem key={"group-" + id} color={group.Color}>
+                <ColorCodedListItem key={"group-" + id} color={group.Color}
+                    onPress={this.onGroupFilterSelected.bind(this, id)}>
                     <Text>{group.Name}</Text>
                     <Badge info textStyle={{lineHeight: 20}}>{group.ItemIds.length}</Badge>
                 </ColorCodedListItem>
@@ -37,7 +58,14 @@ class ItemFilterDrawer extends Component {
         );
 
         filters.push(
-            <ListItem key="others-7days">
+            <ListItem key="others-7days" onPress={this.onAllFilterSelected.bind(this)}>
+                <Text>All Items</Text>
+                <Badge info textStyle={{lineHeight: 20}}>{this.props.items.length}</Badge>
+            </ListItem>
+        );
+
+        filters.push(
+            <ListItem key="others-7days" onPress={this.onDateFilterSelected.bind(this, "7")}>
                 <Text>Upcoming within 7 days</Text>
                 <Badge info textStyle={{lineHeight: 20}}>2</Badge>
             </ListItem>
@@ -74,7 +102,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function(state) {
     return {
-        groups: Selectors.getGroups(state)
+        groups: Selectors.getGroups(state),
+        items: Selectors.getItems(state)
     };
 };
 
