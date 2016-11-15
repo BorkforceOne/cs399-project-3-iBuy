@@ -48,6 +48,11 @@ class ItemViewScene extends Component {
 
     onAddItem() {
         let item = new Item();
+        if (this.props.route.filter && this.props.route.filter.Type == "BY_GROUP")
+            item.GroupId = this.props.route.filter.GroupId;
+        else if (Object.keys(this.props.groups).length > 0)
+            item.GroupId = Object.keys(this.props.groups)[0];
+
         this.props.dispatch(Actions.addItem(item));
 
         this.gotoScene("item-settings", item.Id);
@@ -70,8 +75,11 @@ class ItemViewScene extends Component {
         let items = [];
         for (let id in this.props.items) {
             let item = this.props.items[id];
+            let color = "white";
+            if (this.props.groups[item.GroupId])
+                color = this.props.groups[item.GroupId].Color
             items.push(
-                <ColorCodedListItem key={id} iconLeft color={item.Color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
+                <ColorCodedListItem key={id} iconLeft color={color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
                     <Icon name='md-home' />
                     <Text>{item.Name + " (" + item.Quantity + ")"}</Text>
                     <Text note>{"due " + Time.getTimeToNow(item.Due) + "  "}</Text>
@@ -181,7 +189,8 @@ const makeMapStateToProps = () => {
     const getItemsFromFilter = Selectors.makeGetItemsFromFilter();
     const mapStateToProps = (state, props) => {
         return {
-            items: getItemsFromFilter(state, props)
+            items: getItemsFromFilter(state, props),
+            groups: Selectors.getGroups(state)
         };
     };
     return mapStateToProps;

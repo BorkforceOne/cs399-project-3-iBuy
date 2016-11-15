@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     label: {
         flex: 1,
         textAlign: 'center',
-        color: '#575757'
+        color: '#575757',
+        fontSize: 16
     },
     button: {
         flex: 2,
