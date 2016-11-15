@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { Container, Button, InputGroup, Input, List, ListItem, View } from 'native-base';
+import { connect } from 'react-redux';
+import Notification from '../Components/Notification';
 
-export default class SignInScene extends Component {
+class SignInScene extends Component {
     constructor(props) {
         super(props);
     }
@@ -17,9 +19,21 @@ export default class SignInScene extends Component {
         });
     }
     render() {
+        let notifications = this.props.notifications;
+        console.log(notifications);
+        let notificationRender = [];
+
+        for (let id in notifications) {
+            if (notifications.hasOwnProperty(id)) {
+                let notification = notifications[id];
+                notificationRender.push(<Notification key={id} text={notification.Contents}/>)
+            }
+        }
+
         return (
             <Container>
                 <View style={styles.mainView}>
+                    {notificationRender}
                     <View style={{flex: 1}}>
                         <Text style={styles.titleText}>GroupBuy</Text>
                     </View>
@@ -56,8 +70,12 @@ export default class SignInScene extends Component {
 // Set up proptypes
 SignInScene.propTypes = {
     navigator: PropTypes.object.isRequired,
-    route: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired,
+    route: PropTypes.object.isRequired,
+    notifications: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired
 };
+
 
 const styles = StyleSheet.create({
     titleText: {
@@ -83,3 +101,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+const mapStateToProps = function (store) {
+    return {
+        users: store.userState,
+        notifications: store.notificationState
+    };
+};
+
+export default connect(mapStateToProps)(SignInScene);
