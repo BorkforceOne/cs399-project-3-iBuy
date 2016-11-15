@@ -1,12 +1,11 @@
 /**
- * Created by Brandon Garling on 11/9/2016.
+ * Created by not Brandon Garling on 11/9/2016.
  */
 let nextId = -1;
-export default class Group {
+export default class GroupMembership {
     Id;
-    Name = "";
-    Color = "#ffffff";
-    Items;
+    UserId;
+    GroupId;
 
     constructor(id) {
         if (id === undefined)

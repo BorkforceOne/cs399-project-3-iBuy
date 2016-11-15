@@ -11,15 +11,14 @@ import { ADD_GROUP, REMOVE_GROUP } from '../ActionTypes';
  * @returns {*}
  */
 export const groupReducer = function (state = {}, action) {
-    if (action.type === ADD_GROUP) {
-        let newState = _.cloneDeep(state);
-        newState[action.group.Id] = action.group;
-        return newState;
-    }
-    if (action.type === REMOVE_GROUP) {
-        let newState = _.cloneDeep(state);
-        delete newState[action.Id];
-        return newState;
+    let newState = _.cloneDeep(state);
+    switch (action.type) {
+        case ADD_GROUP:
+            newState[action.group.Id] = action.group;
+            return newState;
+        case REMOVE_GROUP:
+            delete newState[action.group.Id];
+            return newState;
     }
     return state;
 };

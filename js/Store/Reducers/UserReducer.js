@@ -11,15 +11,14 @@ import { ADD_USER, REMOVE_USER } from '../ActionTypes';
  * @returns {*}
  */
 export const userReducer = function (state = {}, action) {
-    if (action.type === ADD_USER) {
-        let newState = _.cloneDeep(state);
-        newState[action.user.Id] = action.user;
-        return newState;
-    }
-    if (action.type === REMOVE_USER) {
-        let newState = _.cloneDeep(state);
-        delete newState[action.Id];
-        return newState;
+    let newState = _.cloneDeep(state);
+    switch (action.type) {
+        case ADD_USER:
+            newState[action.user.Id] = action.user;
+            return newState;
+        case REMOVE_USER:
+            delete newState[action.user.Id];
+            return newState;
     }
     return state;
 };
