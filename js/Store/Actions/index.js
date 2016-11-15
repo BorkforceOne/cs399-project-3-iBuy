@@ -3,5 +3,6 @@ import * as ItemActions from './ItemActions';
 import * as UserActions from './UserActions';
 import * as GroupActions from './GroupActions';
 import * as GroupMembershipActions from './GroupMembershipActions';
+import * as NotificationActions from './NotificationActions';
 
-export default _.merge(ItemActions, UserActions, GroupActions, GroupMembershipActions);
+export default _.merge(ItemActions, UserActions, GroupActions, GroupMembershipActions, NotificationActions);

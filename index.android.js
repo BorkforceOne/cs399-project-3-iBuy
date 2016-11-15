@@ -23,16 +23,6 @@ export default class iBuy extends Component {
     }
 
     componentDidMount() {
-
-        fetch("http://10.24.70.13:4300/api/v1/users")
-            .then((response) => response.json())
-            .then((users) => {
-                console.log(users);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-
         // Allow back button to return to last scene
         BackAndroid.addEventListener('hardwareBackPress', () => {
             const routes = this._navigator.getCurrentRoutes();
