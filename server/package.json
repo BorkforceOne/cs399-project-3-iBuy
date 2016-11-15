@@ -1,0 +1,25 @@
+{
+  "name": "ibuy-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/www",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node %NODE_DEBUG_OPTION% ./bin/www"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sequelize": "^3.24.8",
+    "express": "^4.14.0",
+    "express-busboy": "^4.0.0",
+    "express-session": "^1.14.2",
+    "express-urlrewrite": "^1.2.0",
+    "debug": "^2.2.0",
+    "cookie-parser": "^1.4.3",
+    "connect-session-sequelize": "^4.1.0-beta.1",
+    "bcrypt": "^0.8.7",
+    "sqlite3": "^3.1.8",
+    "nodemailer": "^2.6.4"
+  }
+}
