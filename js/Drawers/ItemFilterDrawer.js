@@ -65,9 +65,9 @@ class ItemFilterDrawer extends Component {
         );
 
         filters.push(
-            <ListItem key="others-7days" onPress={this.onDateFilterSelected.bind(this, "7")}>
+            <ListItem key="others-7days" onPress={this.onDateFilterSelected.bind(this, 7 * 24 * 60 * 60 * 1000)}>
                 <Text>Upcoming within 7 days</Text>
-                <Badge info textStyle={{lineHeight: 20}}>2</Badge>
+                <Badge info textStyle={{lineHeight: 20}}>{this.props.items7DaysCount}</Badge>
             </ListItem>
         );
 
@@ -100,10 +100,13 @@ const styles = StyleSheet.create({
     }
 });
 
+
+const getNext7Days = Selectors.makeGetItemsFromTimespan(7 * 24 * 60 * 60 * 1000);
 const mapStateToProps = function(state) {
     return {
         groups: Selectors.getGroups(state),
-        items: Selectors.getItems(state)
+        items: Selectors.getItems(state),
+        items7DaysCount: Object.keys(getNext7Days(state)).length
     };
 };
 
