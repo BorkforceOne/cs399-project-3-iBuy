@@ -3,9 +3,7 @@
  */
 import { ADD_USER, REMOVE_USER} from '../ActionTypes';
 
-let nextUserId = -1;
-export function addUser(user, id=nextUserId--) {
-    user.Id = id;
+export function addUser(user) {
     return {
         type: ADD_USER,
         user: user

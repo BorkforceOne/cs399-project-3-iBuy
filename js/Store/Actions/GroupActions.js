@@ -3,9 +3,7 @@
  */
 import { ADD_GROUP, REMOVE_GROUP } from '../ActionTypes';
 
-let nextGroupId = -1;
-export function addGroup(group, id=nextGroupId--) {
-    group.Id = id;
+export function addGroup(group) {
     return {
         type: ADD_GROUP,
         group: group
