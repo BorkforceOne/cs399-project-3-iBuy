@@ -7,6 +7,7 @@ import '../Utils/NumberHelpers';
 import {connect} from 'react-redux';
 import Actions from '../Store/Actions';
 import Group from '../Models/Group';
+import Selectors from '../Store/Selectors';
 
 class GroupViewScene extends Component {
     constructor() {
@@ -53,7 +54,7 @@ class GroupViewScene extends Component {
             items.push(
                 <ColorCodedListItem key={id} color={item.Color} button onPress={this.gotoScene.bind(this, "group-settings", id)}>
                     <Text>{item.Name}</Text>
-                    <Text note>{item.totalMembers + " members"}</Text>
+                    <Text note>{item.UserIds.length + " members"}</Text>
                 </ColorCodedListItem>
             );
         }
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function(store) {
     return {
-        groups: store.groupState
+        groups: Selectors.getGroups(store)
     };
 };
 
