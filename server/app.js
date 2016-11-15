@@ -39,8 +39,10 @@ database.syncDatabase(true);
  */
 const users = require('./routes/users');
 const attachments = require('./routes/attachments');
+const auth = require('./routes/auth');
 app.use(users);
 app.use(attachments);
+app.use(auth);
 
 /**
  * Finish setting express settings

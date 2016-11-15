@@ -24,5 +24,5 @@ export function handleRESTErrors(dispatch, errors) {
     else {
         dispatch(Actions.addNotification("Unhandled error occurred"))
     }
-    console.error(errors);
+    console.log(errors);
 }

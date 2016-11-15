@@ -101,8 +101,6 @@ export default class DateTimePicker extends Component {
                 maxDate: this.state.maxDate
             })
                 .then(({ datePickerAction, year, month, day }) => {
-                    console.log(datePickerAction);
-                    console.log(year);
                     if (datePickerAction !== DatePickerAndroid.dismissedAction && year !== undefined && month !== undefined && day !== undefined ) {
                         if (this.props.mode === 'datetime') {
                             let options = {};

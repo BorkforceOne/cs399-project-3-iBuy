@@ -33,7 +33,8 @@ class RegisterScene extends Component {
             .then(user => {
                 this.props.dispatch(Actions.addNotification("User account created"));
                 this.props.navigator.pop();
-            });
+            })
+            .catch((error) => {});
     }
     onInputChange(field, event) {
         this.setState({
