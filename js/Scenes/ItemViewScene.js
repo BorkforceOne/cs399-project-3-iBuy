@@ -18,6 +18,7 @@ class ItemViewScene extends Component {
             showDrawer: false
         }
     }
+
     openMenu() {
         this.refs.MenuContext.openMenu("menu");
     }
@@ -42,6 +43,7 @@ class ItemViewScene extends Component {
             });
         }
     }
+
     onAddItem() {
         let item = new Item();
         this.props.dispatch(Actions.addItem(item));

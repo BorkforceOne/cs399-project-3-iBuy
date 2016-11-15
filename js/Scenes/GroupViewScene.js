@@ -5,19 +5,27 @@ import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-n
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
 import {connect} from 'react-redux';
+import Actions from '../Store/Actions';
+import Group from '../Models/Group';
 
 class GroupViewScene extends Component {
     constructor() {
         super();
     }
+
     openMenu() {
         this.refs.MenuContext.openMenu("menu");
     }
 
-    gotoScene(id) {
+    gotoScene(id, entityId) {
         if (id == "sign-in") {
             this.props.navigator.resetTo({
                 id: id
+            });
+        } else if (id == "group-settings") {
+            this.props.navigator.push({
+                id: id,
+                groupId: entityId
             });
         } else if (id == "group-view" || id == "item-view") {
             this.props.navigator.replace({
@@ -30,14 +38,21 @@ class GroupViewScene extends Component {
         }
     }
 
+    onAddGroup() {
+        let group = new Group();
+        this.props.dispatch(Actions.addGroup(group));
+
+        this.gotoScene("group-settings", group.Id);
+    }
+
     render() {
 
         let items = [];
         for (let id in this.props.groups) {
-            let item = this.props.items[id];
+            let item = this.props.groups[id];
             items.push(
-                <ColorCodedListItem key={i} color={item.color} button onPress={this.gotoScene.bind(this, "group-settings")}>
-                    <Text>{item.name}</Text>
+                <ColorCodedListItem key={id} color={item.Color} button onPress={this.gotoScene.bind(this, "group-settings", id)}>
+                    <Text>{item.Name}</Text>
                     <Text note>{item.totalMembers + " members"}</Text>
                 </ColorCodedListItem>
             );
@@ -73,7 +88,7 @@ class GroupViewScene extends Component {
                         </List>
                     </Content>
                     <View style={styles.addButton}>
-                        <Button rounded primary style={{width: 60, height: 60}}>
+                        <Button rounded primary style={{width: 60, height: 60}} onPress={this.onAddGroup.bind(this)}>
                             <Icon name="md-add" />
                         </Button>
                     </View>
