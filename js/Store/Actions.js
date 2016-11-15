@@ -1,6 +1,9 @@
-import { ADD_ITEM, ADD_GROUP, ADD_USER,
+import {
+    ADD_ITEM, ADD_GROUP, ADD_USER,
     REMOVE_ITEM, REMOVE_GROUP, REMOVE_USER,
-    UPDATE_ITEM } from './ActionTypes';
+    UPDATE_ITEM, ADD_MEMBERSHIP, REMOVE_MEMBERSHIP,
+    UPDATE_GROUP
+} from './ActionTypes';
 
 export function addItem(item) {
     return {
@@ -41,6 +44,13 @@ export function removeGroup(id) {
     }
 }
 
+export function updateGroup(updatedEntity) {
+    return {
+        type: UPDATE_GROUP,
+        group: updatedEntity
+    }
+}
+
 export function removeUser(id) {
     return {
         type: REMOVE_USER,
@@ -55,6 +65,22 @@ export function updateItem(updatedEntity) {
     }
 }
 
+let nextMembershipId = -1;
+export function addMembership(membership, id=nextMembershipId--) {
+    membership.Id = id;
+    return {
+        type: ADD_MEMBERSHIP,
+        membership
+    }
+}
+
+export function removeMembership(id) {
+    return {
+        type: REMOVE_MEMBERSHIP,
+        id
+    }
+}
+
 
 export default Reducers = {
     addItem: addItem,
@@ -63,6 +89,7 @@ export default Reducers = {
     removeItem: removeItem,
     removeGroup: removeGroup,
     removeUser: removeUser,
-    updateItem: updateItem
+    updateItem: updateItem,
+    updateGroup: updateGroup
 };
 
