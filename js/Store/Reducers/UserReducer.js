@@ -18,7 +18,7 @@ export const userReducer = function (state = {}, action) {
     }
     if (action.type === REMOVE_USER) {
         let newState = _.cloneDeep(state);
-        delete newState[action.Id];
+        delete newState[action.user.Id];
         return newState;
     }
     return state;

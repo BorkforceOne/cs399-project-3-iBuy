@@ -18,7 +18,7 @@ export const groupReducer = function (state = {}, action) {
     }
     if (action.type === REMOVE_GROUP) {
         let newState = _.cloneDeep(state);
-        delete newState[action.Id];
+        delete newState[action.group.Id];
         return newState;
     }
     return state;

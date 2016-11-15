@@ -17,7 +17,7 @@ export const itemReducer = function (state = {}, action) {
             newState[action.item.Id] = action.item;
             return newState;
         case REMOVE_ITEM:
-            delete newState[action.Id];
+            delete newState[action.item.Id];
             return newState;
         case UPDATE_ITEM:
             newState[action.item.Id] = _.cloneDeep(action.item);

@@ -6,7 +6,8 @@ import { combineReducers } from 'redux';
 import ItemReducer from './ItemReducer';
 import UserReducer from './UserReducer';
 import GroupReducer from './GroupReducer';
+import GroupMembershipReducer from './GroupMembershipReducer';
 
-const reducers = _.merge(ItemReducer, UserReducer, GroupReducer);
+const reducers = _.merge(ItemReducer, UserReducer, GroupReducer, GroupMembershipReducer);
 
 export default Reducers = combineReducers(reducers);

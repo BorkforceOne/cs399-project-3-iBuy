@@ -3,42 +3,39 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Container, Button, Header, Icon, Title, Content, H3, Input, List, ListItem} from 'native-base';
+import { Container, Button, Header, Icon, Title, Content, H3, Input, InputGroup, List, ListItem} from 'native-base';
+import { connect } from 'react-redux';
+import Actions from '../Store/Actions';
 
-export default class GroupSettingsScene extends Component {
+class GroupSettingsScene extends Component {
     constructor(props) {
         super(props);
-    }
-    static get defaultProps() {
-        return {
-            'users': [
-                {
-                    'firstname': 'Brandon',
-                    'lastname': 'Garling',
-                    'email': 'bjg96@nau.edu'
-                },
-                {
-                    'firstname': 'Harrison',
-                    'lastname': 'Lambeth',
-                    'email': 'harrison@nau.edu'
-                }
-            ]
-        }
     }
     onGoBack() {
         this.props.navigator.pop();
     }
+    onInputChange(field, event) {
+        let group = this.props.groups[this.props.route.groupId];
+        group[field] = event.nativeEvent.text;
+        this.props.dispatch(Actions.updateGroup(group));
+    }
     render() {
-        let users = this.props.users.map((element, index) => {
-            return (
-                <ListItem key={index}>
+
+        let group = this.props.groups[this.props.route.groupId];
+
+        let userRows = [];
+        for (let id in this.props.users) {
+            let user = this.props.users[id];
+            userRows.push(
+                <ListItem key={id}>
                     <View style={{flex: 1, flexDirection: 'row' }}>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{element.firstname} {element.lastname}</Text>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{element.email}</Text>
+                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Firstname} {user.Lastname}</Text>
+                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
                         <Icon name="md-trash"/>
                     </View>
-                </ListItem>);
-        });
+                </ListItem>
+            );
+        }
 
         return (
             <Container>
@@ -52,28 +49,43 @@ export default class GroupSettingsScene extends Component {
 
                 <Content style={styles.mainContent}>
                     <View>
-                        <H3 style={styles.H3}>Manage Users</H3>
-                        <List style={{padding: 10}}>
+                        <H3 style={styles.H3}>Settings</H3>
+                        <List>
                             <ListItem>
-                                <View style={{flex: 1, flexDirection: 'row'}}>
-                                    <Text style={{flex: 1, color: 'black'}}>Name</Text>
-                                    <Text style={{flex: 1, color: 'black'}}>Email</Text>
-                                </View>
+                                <InputGroup>
+                                    <Input inlineLabel label="NAME" value={group.Name} onChange={this.onInputChange.bind(this, 'Name')} />
+                                </InputGroup>
                             </ListItem>
-                            {users}
+                            <ListItem>
+                                <InputGroup>
+                                    <Input inlineLabel label="COLOR" value={group.Color} onChange={this.onInputChange.bind(this, 'Color')} />
+                                </InputGroup>
+                            </ListItem>
                         </List>
-                        <View style={styles.inlineInputView}>
-                            <Input style={{flex: 1}} placeholder='Email' />
-                            <Button style={{flex: 0.3}} block>Invite</Button>
-                        </View>
                     </View>
-
                     <View>
-                        <H3 style={styles.H3}>Group Name</H3>
-                        <View style={styles.inlineInputView}>
-                            <Input style={{flex: 1}} placeholder='Group Name' value='Home' />
-                            <Button style={{flex: 0.3}} block>Change</Button>
-                        </View>
+                        <H3 style={styles.H3}>Users</H3>
+                        {userRows.length == 0 ? <Text style={{marginLeft: 40, marginBottom: 20}}>No users exist in this group</Text> :
+                            <List style={{padding: 10}}>
+                                <ListItem>
+                                    <View style={{flex: 1, flexDirection: 'row'}}>
+                                        <Text style={{flex: 1, color: 'black'}}>Name</Text>
+                                        <Text style={{flex: 1, color: 'black'}}>Email</Text>
+                                    </View>
+                                </ListItem>
+                                {userRows}
+                            </List>
+                        }
+                        <List>
+                            <ListItem>
+                                <InputGroup>
+                                    <Input inlineLabel label="INVITE" placeholder="email@example.com" onChange={this.onInputChange.bind(this, 'Name')} />
+                                </InputGroup>
+                            </ListItem>
+                            <ListItem>
+                                <Button style={{flex: 0.3}} block>Invite</Button>
+                            </ListItem>
+                        </List>
                     </View>
                 </Content>
             </Container>
@@ -84,15 +96,19 @@ export default class GroupSettingsScene extends Component {
 // Set up proptypes
 GroupSettingsScene.propTypes = {
     navigator: PropTypes.object.isRequired,
-    route: PropTypes.object.isRequired
+    route: PropTypes.object.isRequired,
+    groups: PropTypes.object.isRequired,
+    memberships: PropTypes.object.isRequired,
+    users: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
     mainContent: {
-        margin: 10
+        // margin: 10
     },
     H3: {
-        padding: 10
+        padding: 10,
+        margin: 10
     },
     inlineInputView: {
         flex: 1,
@@ -100,3 +116,13 @@ const styles = StyleSheet.create({
         padding: 10
     }
 });
+
+const mapStateToProps = function (store) {
+    return {
+        groups: store.groupState,
+        memberships: store.membershipState,
+        users: store.userState
+    };
+};
+
+export default connect(mapStateToProps)(GroupSettingsScene);
