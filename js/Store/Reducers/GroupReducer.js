@@ -2,7 +2,7 @@
  * Created by Brandon Garling on 11/14/2016.
  */
 import _ from 'lodash';
-import { ADD_GROUP, REMOVE_GROUP } from '../ActionTypes';
+import { ADD_GROUP, REMOVE_GROUP, UPDATE_GROUP } from '../ActionTypes';
 
 /**
  *
@@ -19,6 +19,10 @@ export const groupReducer = function (state = {}, action) {
         case REMOVE_GROUP:
             delete newState[action.group.Id];
             return newState;
+        case UPDATE_GROUP:
+            newState[action.group.Id] = _.cloneDeep(action.group);
+            return newState;
+
     }
     return state;
 };
