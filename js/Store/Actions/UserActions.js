@@ -3,6 +3,7 @@
  */
 import { ADD_USER, REMOVE_USER} from '../ActionTypes';
 import { parseRESTResponse, handleRESTErrors} from '../../Utils/RESTHelpers';
+import { ServerURL } from '../../Config';
 
 export function addUser(user) {
     return {
@@ -22,7 +23,7 @@ export function createUser(user) {
 
     return function (dispatch) {
 
-        return fetch(`http://10.24.70.13:4300/api/v1/users`,
+        return fetch(`${ServerURL}/api/v1/users`,
             {
                 method: 'POST',
                 headers: {
