@@ -3,7 +3,7 @@
  */
 export default class Group {
     Id;
-    Name;
-    Color;
+    Name = "";
+    Color = "#ffffff";
     Items;
 }
