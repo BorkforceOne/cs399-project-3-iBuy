@@ -70,6 +70,18 @@ class ItemViewScene extends Component {
         this.props.navigator.replace(newRoute);
     }
 
+    onMenuItemSelected(item) {
+        if (item == "toggleShowCompleted") {
+            let filter = _.cloneDeep(this.props.route.filter);
+            if (!filter)
+                filter = {};
+            filter.ShowCompleted = !filter.ShowCompleted;
+            this.onFilterChanged(filter);
+        } else {
+            this.gotoScene(item);
+        }
+    }
+
     render() {
 
         let items = [];
@@ -80,15 +92,20 @@ class ItemViewScene extends Component {
                 color = this.props.groups[item.GroupId].Color
             items.push(
                 <ColorCodedListItem key={id} iconLeft color={color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
-                    <Icon name='md-home' />
-                    <Text>{item.Name + " (" + item.Quantity + ")"}</Text>
-                    <Text note>{"due " + Time.getTimeToNow(item.Due) + "  "}</Text>
+                    <Icon style={item.Completed ? {color: "#666"} : {}} name='md-home' />
+                    <Text style={item.Completed ? {color: "#666"} : {}}>{item.Name + " (" + item.Quantity + ")"}</Text>
+                    {item.Completed ?
+                        <Text note style={{color:"#008800"}}>{"Completed  "}</Text>
+                        :
+                        <Text note>{"due " + Time.getTimeToNow(item.Due) + "  "}</Text>
+                    }
                     <Badge info textStyle={{lineHeight: 20}}>{(item.Cost * item.Quantity).toCurrency()}</Badge>
                 </ColorCodedListItem>
             );
         }
 
         let filterTitle = (this.props.route.filter && this.props.route.filter.Title) ? this.props.route.filter.Title : "All Items";
+        let showCompleted = this.props.route.filter && this.props.route.filter.ShowCompleted;
 
         return (
             <Drawer
@@ -107,10 +124,13 @@ class ItemViewScene extends Component {
                 })}
                 >
                 <MenuContext style={{ flex: 1 }} ref="MenuContext">
-                    <Menu name="menu" style={styles.moreMenu} onSelect={this.gotoScene.bind(this)}>
+                    <Menu name="menu" style={styles.moreMenu} onSelect={this.onMenuItemSelected.bind(this)}>
                         <MenuTrigger>
                         </MenuTrigger>
                         <MenuOptions>
+                            <MenuOption value="toggleShowCompleted">
+                                <Text>{showCompleted ? "Hide" : "Show"} Completed Items</Text>
+                            </MenuOption>
                             <MenuOption value="about">
                                 <Text>About</Text>
                             </MenuOption>
