@@ -2,8 +2,26 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import Moment from 'moment';
+import {getSession} from './SessionSelectors';
+import {getMemberships} from './MembershipSelectors';
 
-export const getRawItems = (state) => state.itemState;
+export const getRawItems = createSelector(
+    [state => state.itemState, getMemberships, getSession], // This is bad, dont do this
+    (items, memberships, session) => {
+        let outItems = {};
+        for (let id in items) {
+            let item = items[id];
+            for (let mid in memberships) {
+                let membership = memberships[mid];
+                if (membership.GroupId == item.GroupId && membership.UserId == session.Id) {
+                    outItems[id] = item;
+                    break;
+                }
+            }
+        }
+        return outItems;
+    }
+);
 export const getItems = createSelector(
     [getRawItems],
     (items) => {
