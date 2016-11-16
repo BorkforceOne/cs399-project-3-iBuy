@@ -22,7 +22,8 @@ export function removeMembership(membership) {
 export function updateMembership(updatedEntity, id) {
     return {
         type: MODIFY_MEMBERSHIP,
-        updatedEntity
+        membership: updatedEntity,
+        id: id
     }
 }
 
@@ -59,6 +60,7 @@ export function remoteGetMemberships() {
 }
 
 export function remoteAddMembership(membership) {
+    console.log(membership);
     return function (dispatch, getState) {
         return fetch(`${ServerURL}/api/v1/group-memberships`,
             {
@@ -66,15 +68,16 @@ export function remoteAddMembership(membership) {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
+                },
+                body: JSON.stringify(membership)
             })
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().membershipState;
 
                 if (state[membership.Id] !== undefined)
-                    dispatch(updateMembership(json));
+                    dispatch(updateMembership(json, membership.Id));
                 else
                     dispatch(addMembership(json));
                 return json;
@@ -94,15 +97,14 @@ export function remoteRemoveMembership(membership) {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(membership)
+                }
             })
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().membershipState;
 
-                if (state[group.Id] !== undefined)
+                if (state[membership.Id] !== undefined)
                     dispatch(removeMembership(membership));
 
                 return json;
