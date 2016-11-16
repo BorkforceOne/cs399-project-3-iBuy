@@ -2,14 +2,36 @@
  * Created by Brandon Garling on 10/30/2016.
  */
 import React, { Component, PropTypes } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Container, Button, Header, Icon, Title, Content, H3, Input, InputGroup, List, ListItem} from 'native-base';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
+import Picker from '../Components/Picker';
+import Selectors from '../Store/Selectors';
+import GroupMembership from '../Models/GroupMembership';
+
+const Item = Picker.Item;
+
+const availableColors = {
+    "Red" : "crimson",
+    "Orange" : "darkorange",
+    "Yellow" : "gold",
+    "Green": "forestgreen",
+    "Blue" : "royalblue",
+    "Purple": "rebeccapurple",
+    "Black": "black",
+    "Gray": "slategray",
+    "White": "white",
+    "Brown": "saddlebrown",
+    "Pink": "hotpink"
+};
 
 class GroupSettingsScene extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            inviteEmail: ""
+        };
     }
     onGoBack() {
         this.props.navigator.pop();
@@ -19,21 +41,93 @@ class GroupSettingsScene extends Component {
         group[field] = event.nativeEvent.text;
         this.props.dispatch(Actions.updateGroup(group));
     }
+    onSelectionChange(field, newValue) {
+        let group = this.props.groups[this.props.route.groupId];
+        group[field] = newValue;
+        this.props.dispatch(Actions.updateGroup(group));
+    }
+    onEditInviteEmail(event) {
+        this.setState({
+            inviteEmail: event.nativeEvent.text
+        });
+    }
+    deleteMembership(userId) {
+        for (let id in this.props.memberships) {
+            let membership = this.props.memberships[id];
+            if (membership.UserId == userId) {
+                this.props.dispatch(Actions.removeMembership(membership));
+                if (userId == this.props.session.Id)
+                    this.onGoBack();
+                return;
+            }
+        }
+    }
+    inviteUser() {
+        let email = this.state.inviteEmail;
+
+        let found = false;
+
+        for (let id in this.props.users) {
+            let user = this.props.users[id];
+            if (user.Email == email) {
+
+                for (let i = 0; i < user.GroupIds.length; i++) {
+                    if (this.props.route.groupId == user.GroupIds[i]) {
+                        Alert.alert("Already in group", "The user you invited is already in the group",
+                        [
+                            {text:"Ok"}
+                        ]);
+                        return;
+                    }
+                }
+
+                let membership = new GroupMembership();
+                membership.UserId = user.Id;
+                membership.GroupId = this.props.route.groupId;
+                this.props.dispatch(Actions.addMembership(membership));
+                found = true;
+
+                this.setState({
+                    inviteEmail: ""
+                });
+                return;
+            }
+        }
+
+        Alert.alert("User not found", "A user with that email was not found",
+        [
+            {text:"Ok"}
+        ]);
+    }
     render() {
 
         let group = this.props.groups[this.props.route.groupId];
 
+        if (!group)
+            return null;
+
         let userRows = [];
-        for (let id in this.props.users) {
-            let user = this.props.users[id];
-            userRows.push(
-                <ListItem key={id}>
-                    <View style={{flex: 1, flexDirection: 'row' }}>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Firstname} {user.Lastname}</Text>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
-                        <Icon name="md-trash"/>
-                    </View>
-                </ListItem>
+        for (let i = 0; i < group.UserIds.length; i++) {
+            let user = this.props.users[group.UserIds[i]];
+            if (user) {
+                userRows.push(
+                    <ListItem key={i}>
+                        <View style={{flex: 1, flexDirection: 'row'}}>
+                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Firstname} {user.Lastname}</Text>
+                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
+                            <Button danger onPress={this.deleteMembership.bind(this, user.Id)}>
+                                <Icon name="md-trash"/>
+                            </Button>
+                        </View>
+                    </ListItem>
+                );
+            }
+        }
+
+        let colorOptions = [];
+        for (let id in availableColors) {
+            colorOptions.push(
+                <Item label={id} value={availableColors[id]} key={id} />
             );
         }
 
@@ -57,9 +151,9 @@ class GroupSettingsScene extends Component {
                                 </InputGroup>
                             </ListItem>
                             <ListItem>
-                                <InputGroup>
-                                    <Input inlineLabel label="COLOR" value={group.Color} onChange={this.onInputChange.bind(this, 'Color')} />
-                                </InputGroup>
+                                <Picker label="COLOR" value={group.Color} onChange={this.onSelectionChange.bind(this, "Color")}>
+                                    {colorOptions}
+                                </Picker>
                             </ListItem>
                         </List>
                     </View>
@@ -79,11 +173,11 @@ class GroupSettingsScene extends Component {
                         <List>
                             <ListItem>
                                 <InputGroup>
-                                    <Input inlineLabel label="INVITE" placeholder="email@example.com" onChange={this.onInputChange.bind(this, 'Name')} />
+                                    <Input inlineLabel label="INVITE" placeholder="email@example.com" value={this.state.inviteEmail} onChange={this.onEditInviteEmail.bind(this)} />
                                 </InputGroup>
                             </ListItem>
                             <ListItem>
-                                <Button style={{flex: 0.3}} block>Invite</Button>
+                                <Button style={{flex: 0.3}} block onPress={this.inviteUser.bind(this)}>Invite</Button>
                             </ListItem>
                         </List>
                     </View>
@@ -119,9 +213,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function (store) {
     return {
-        groups: store.groupState,
-        memberships: store.membershipState,
-        users: store.userState
+        groups: Selectors.getGroups(store),
+        memberships: Selectors.getMemberships(store),
+        users: Selectors.getUsers(store),
+        session: Selectors.getSession(store)
     };
 };
 

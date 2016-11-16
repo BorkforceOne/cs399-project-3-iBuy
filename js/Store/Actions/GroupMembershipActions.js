@@ -12,10 +12,10 @@ export function addMembership(membership) {
     }
 }
 
-export function removeMembership(id) {
+export function removeMembership(membership) {
     return {
         type: REMOVE_MEMBERSHIP,
-        id
+        membership
     }
 }
 
