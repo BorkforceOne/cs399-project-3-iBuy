@@ -2,12 +2,13 @@
  * Created by Brandon Garling on 10/30/2016.
  */
 import React, { Component, PropTypes } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Container, Button, Header, Icon, Title, Content, H3, Input, InputGroup, List, ListItem} from 'native-base';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
 import Picker from '../Components/Picker';
 import Selectors from '../Store/Selectors';
+import GroupMembership from '../Models/GroupMembership';
 
 const Item = Picker.Item;
 
@@ -28,6 +29,9 @@ const availableColors = {
 class GroupSettingsScene extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            inviteEmail: ""
+        };
     }
     onGoBack() {
         this.props.navigator.pop();
@@ -42,6 +46,39 @@ class GroupSettingsScene extends Component {
         group[field] = newValue;
         this.props.dispatch(Actions.updateGroup(group));
     }
+    onEditInviteEmail(event) {
+        this.setState({
+            inviteEmail: event.nativeEvent.text
+        });
+    }
+    inviteUser() {
+        let email = this.state.inviteEmail;
+
+        let found = false;
+
+        for (let id in this.props.users) {
+            let user = this.props.users[id];
+            if (user.Email == email) {
+                let membership = new GroupMembership();
+                membership.UserId = user.Id;
+                membership.GroupId = this.props.route.groupId;
+                this.props.dispatch(Actions.addMembership(membership));
+                found = true;
+
+                this.setState({
+                    inviteEmail: ""
+                });
+                break;
+            }
+        }
+
+        if (!found) {
+            Alert.alert("User not found", "A user with that email was not found",
+            [
+                {text:"Ok"}
+            ]);
+        }
+    }
     render() {
 
         let group = this.props.groups[this.props.route.groupId];
@@ -49,15 +86,17 @@ class GroupSettingsScene extends Component {
         let userRows = [];
         for (let i = 0; i < group.UserIds.length; i++) {
             let user = this.props.users[group.UserIds[i]];
-            userRows.push(
-                <ListItem key={i}>
-                    <View style={{flex: 1, flexDirection: 'row' }}>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.FirstName} {user.LastName}</Text>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
-                        <Icon name="md-trash"/>
-                    </View>
-                </ListItem>
-            );
+            if (user) {
+                userRows.push(
+                    <ListItem key={i}>
+                        <View style={{flex: 1, flexDirection: 'row'}}>
+                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.FirstName} {user.LastName}</Text>
+                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
+                            <Icon name="md-trash"/>
+                        </View>
+                    </ListItem>
+                );
+            }
         }
 
         let colorOptions = [];
@@ -109,11 +148,11 @@ class GroupSettingsScene extends Component {
                         <List>
                             <ListItem>
                                 <InputGroup>
-                                    <Input inlineLabel label="INVITE" placeholder="email@example.com" onChange={this.onInputChange.bind(this, 'Name')} />
+                                    <Input inlineLabel label="INVITE" placeholder="email@example.com" value={this.state.inviteEmail} onChange={this.onEditInviteEmail.bind(this)} />
                                 </InputGroup>
                             </ListItem>
                             <ListItem>
-                                <Button style={{flex: 0.3}} block>Invite</Button>
+                                <Button style={{flex: 0.3}} block onPress={this.inviteUser.bind(this)}>Invite</Button>
                             </ListItem>
                         </List>
                     </View>
