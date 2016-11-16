@@ -19,7 +19,7 @@ export function removeMembership(membership) {
     }
 }
 
-export function updateMembership(updatedEntity) {
+export function updateMembership(updatedEntity, id) {
     return {
         type: MODIFY_MEMBERSHIP,
         updatedEntity
@@ -40,7 +40,7 @@ export function remoteGetMemberships() {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().membershipState;
 
                 for (let i = 0; i < json.length; i++) {
                     if (state[json[i].Id] === undefined)

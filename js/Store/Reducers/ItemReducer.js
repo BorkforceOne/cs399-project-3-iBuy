@@ -20,6 +20,8 @@ export const itemReducer = function (state = {}, action) {
             delete newState[action.item.Id];
             return newState;
         case UPDATE_ITEM:
+            if (action.id !== undefined)
+                delete newState[action.id];
             newState[action.item.Id] = _.cloneDeep(action.item);
             return newState;
     }

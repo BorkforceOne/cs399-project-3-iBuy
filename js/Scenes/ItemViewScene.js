@@ -23,7 +23,9 @@ class ItemViewScene extends Component {
 
     componentWillMount() {
         this.props.dispatch(Actions.remoteGetItems());
+        this.props.dispatch(Actions.remoteGetGroups());
         this.props.dispatch(Actions.remoteGetUsers());
+        this.props.dispatch(Actions.remoteGetMemberships());
         this.startPoll();
     }
 
@@ -33,8 +35,10 @@ class ItemViewScene extends Component {
 
     startPoll() {
         this.timeout = setTimeout(() => {
-            this.props.dispatch(Actions.remoteGetItems())
-            this.props.dispatch(Actions.remoteGetUsers())
+            this.props.dispatch(Actions.remoteGetItems());
+            this.props.dispatch(Actions.remoteGetGroups());
+            this.props.dispatch(Actions.remoteGetUsers());
+            this.props.dispatch(Actions.remoteGetMemberships());
         }, 15000);
     }
 

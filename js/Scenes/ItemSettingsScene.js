@@ -15,8 +15,31 @@ class ItemSettingsScene extends Component {
     constructor(props) {
         super(props);
     }
+    componentWillMount() {
+        this.props.dispatch(Actions.remoteGetMemberships());
+        this.props.dispatch(Actions.remoteGetGroups());
+        this.startPoll();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
+    }
+
+    startPoll() {
+        this.timeout = setTimeout(() => {
+            this.props.dispatch(Actions.remoteGetMemberships());
+            this.props.dispatch(Actions.remoteGetGroups());
+        }, 15000);
+    }
     onGoBack() {
         this.props.navigator.pop();
+        if (this.props.items[this.props.route.itemId] !== undefined) {
+            if (this.props.route.itemId < 1) {
+                this.props.dispatch(Actions.remoteAddItem(this.props.items[this.props.route.itemId]))
+            } else {
+                this.props.dispatch(Actions.remoteUpdateItem(this.props.items[this.props.route.itemId]))
+            }
+        }
     }
     onInputChange(field, event) {
         let item = this.props.items[this.props.route.itemId];
@@ -67,6 +90,7 @@ class ItemSettingsScene extends Component {
                 {text: 'Yes', onPress: () => {
                     let item = this.props.items[this.props.route.itemId];
                     this.props.dispatch(Actions.removeItem(item));
+                    this.props.dispatch(Actions.remoteRemoveItem(item));
                     this.onGoBack();
                 }},
                 {text: 'Cancel', onPress: () => {}}
