@@ -5,49 +5,102 @@
  */
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { AppRegistry, Navigator, BackAndroid } from 'react-native';
+
+import GroupSettingsScene from './js/Scenes/GroupSettingsScene';
+import ItemSettingsScene from './js/Scenes/ItemSettingsScene';
+import SignInScene from './js/Scenes/SignInScene';
+import AboutScene from './js/Scenes/AboutScene';
+import RegisterScene from './js/Scenes/RegisterScene';
+import ItemViewScene from './js/Scenes/ItemViewScene.js';
+import GroupViewScene from './js/Scenes/GroupViewScene.js';
+import { Provider } from 'react-redux'
+import Store from './js/Store';
 
 export default class iBuy extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
-    );
-  }
-}
+    constructor(props) {
+        super(props);
+    }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+    componentDidMount() {
+        // Allow back button to return to last scene
+        BackAndroid.addEventListener('hardwareBackPress', () => {
+            const routes = this._navigator.getCurrentRoutes();
+
+            if (routes.length == 1) {
+                // Close the app
+                return false;
+            }
+            this._navigator.pop();
+            return true;
+        });
+    }
+
+    /**
+     * Render the app
+     */
+    render() {
+        // Simply divert the rendering to renderScene()
+        return (
+            <Provider store={Store}>
+                <Navigator
+                    ref={(ref) => {
+                        this._navigator = ref;
+                    }}
+                    configureScene={() => {
+                        return Navigator.SceneConfigs.FadeAndroid;
+                    }}
+                    initialRoute={{id: 'sign-in'}}
+                    renderScene={this.renderScene.bind(this)}
+                />
+            </Provider>
+        );
+    }
+
+    /**
+     * Decide which root level component to render depending on which scene is currently being accessed
+     * @param route - The route to render
+     * @param navigator - The navigator
+     */
+    renderScene(route, navigator) {
+
+        let params = {
+            route: route,
+            navigator: navigator
+        };
+
+        switch (route.id) {
+            // Render the calculator
+            case "sign-in":
+                return (
+                    <SignInScene {...params}/>
+                );
+            case "about":
+                return (
+                    <AboutScene {...params}/>
+                );
+            case "register":
+                return (
+                    <RegisterScene {...params}/>
+                );
+            case "item-view":
+                return (
+                    <ItemViewScene {...params}/>
+                );
+            case "group-view":
+                return (
+                    <GroupViewScene {...params}/>
+                );
+            case "group-settings":
+                return (
+                    <GroupSettingsScene {...params}/>
+                );
+            case "item-settings":
+                return (
+                    <ItemSettingsScene {...params}/>
+                );
+        }
+    }
+}
 
 AppRegistry.registerComponent('iBuy', () => iBuy);
