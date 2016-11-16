@@ -34,13 +34,11 @@ router.post('/api/v1/group-memberships', function(req, res, next) {
 /* Delete group membership */
 router.delete('/api/v1/group-memberships/:id', function(req, res, next) {
     let params = {
-        'UserId': req.session.userId,
         'id': req.params.id
     };
 
     GroupMembership.destroy({
         where: {
-            UserId: params.UserId,
             id: params.id
         }
     })
