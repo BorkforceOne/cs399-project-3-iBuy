@@ -5,7 +5,9 @@ const Sequelize = require('sequelize');
 const database = require('../user_modules/database');
 const encryption = require('../user_modules/encryption');
 
-const Attachment = require('./attachment');
+const GroupMembership = require('./group_membership');
+const Item = require('./item');
+const Group = require('./group');
 
 module.exports = {};
 
@@ -34,6 +36,12 @@ const User = database.sequelize.define('user', {
   Salt: {
     allowNull: false,
     type: Sequelize.STRING
+  },
+  Id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true
   }
 },{
   instanceMethods: {
@@ -41,26 +49,50 @@ const User = database.sequelize.define('user', {
       return User.getSerializableFields();
     },
     changePassword: function(password) {
-      return new Promise(function (resolve, reject) {
-        encryption.generateSalt()
-          .then(function (salt) {
-            this['Salt'] = salt;
-            encryption.generateHash(password, salt)
-              .then(function (hash) {
-                this['Password'] = hash;
-                resolve(true);
-              }.bind(this));
-          }.bind(this));
-      }.bind(this));
+      return new Promise((resolve, reject) => {
+          encryption.generateSalt()
+              .then(salt => {
+                  this['Salt'] = salt;
+              })
+              .then(() => {
+                  return encryption.generateHash(password, this['Salt']);
+              })
+              .then(hash => {
+                  this['Password'] = hash;
+                  resolve(this);
+              })
+              .catch(reject);
+      });
     }
   },
 });
 
-User.hasMany(Attachment, {
+User.hasMany(GroupMembership, {
   foreignKey: {
     name: 'UserId',
     allowNull: false
   }
+});
+
+User.hasMany(Item, {
+  foreignKey: {
+    name: 'CreatedById',
+    allowNull: false
+  }
+});
+
+User.hasMany(Item, {
+    foreignKey: {
+        name: 'CompletedById',
+        allowNull: true
+    }
+});
+
+User.hasMany(Group, {
+    foreignKey: {
+        name: 'CreatedById',
+        allowNull: false
+    }
 });
 
 /**
@@ -68,7 +100,7 @@ User.hasMany(Attachment, {
  * @returns {[string]}
  */
 User.getSerializableFields = function () {
-  return ['id', 'Firstname', 'Lastname', 'Email', 'createdAt', 'updatedAt'];
+  return ['Id', 'Firstname', 'Lastname', 'Email', 'createdAt', 'updatedAt'];
 };
 
 module.exports = User;

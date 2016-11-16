@@ -5,7 +5,11 @@ let nextId = -1;
 export default class Group {
     Id;
     Name = "";
-    Color = "#ffffff";
+    Color = "red";
+    CreatedById = null;
+    createdAt = null;
+    updatedAt = null;
+
     ItemIds = [];
     UserIds = [];
 
