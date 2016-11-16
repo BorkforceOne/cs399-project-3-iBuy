@@ -3,7 +3,7 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Container, Button, InputGroup, Input, Header, Title, Icon, List, ListItem } from 'native-base';
+import { Container, Button, InputGroup, Input, Header, Title, Icon, List, ListItem, Content } from 'native-base';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
 import User from '../Models/User';
@@ -62,7 +62,7 @@ class RegisterScene extends Component {
                     <Title>Register</Title>
                 </Header>
 
-                <View style={styles.mainView}>
+                <Content style={styles.mainView}>
                     {notificationRender}
                     <View style={{flex: 1}}>
                         <Text style={styles.titleText}>GroupBuy</Text>
@@ -95,7 +95,7 @@ class RegisterScene extends Component {
                     <View style={styles.buttonView}>
                         <Button style={styles.button} onPress={this.onRegister.bind(this)}>Register</Button>
                     </View>
-                </View>
+                </Content>
             </Container>
         )
     }
@@ -117,11 +117,10 @@ const styles = StyleSheet.create({
         paddingTop: 50
     },
     mainView: {
-        flex: 1,
-        justifyContent: 'space-between'
+        flex: 1
     },
     button: {
-        margin: 5
+        margin: 15
     },
     buttonView: {
         flex: 1,
