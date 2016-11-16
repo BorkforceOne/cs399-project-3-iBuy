@@ -20,6 +20,8 @@ export const groupReducer = function (state = {}, action) {
             delete newState[action.group.Id];
             return newState;
         case UPDATE_GROUP:
+            if (action.id !== undefined)
+                delete newState[action.id];
             newState[action.group.Id] = _.cloneDeep(action.group);
             return newState;
 

@@ -19,10 +19,11 @@ export function removeItem(item) {
     }
 }
 
-export function updateItem(updatedEntity) {
+export function updateItem(updatedEntity, id) {
     return {
         type: UPDATE_ITEM,
-        item: updatedEntity
+        item: updatedEntity,
+        id: id
     }
 }
 
@@ -71,12 +72,13 @@ export function remoteAddItem(item) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().itemState;
 
                 if (state[item.Id] !== undefined)
-                    dispatch(updateItem(json));
+                    dispatch(updateItem(json, item.Id));
                 else
                     dispatch(addItem(json));
+                
                 return json;
             })
             .catch(error => {

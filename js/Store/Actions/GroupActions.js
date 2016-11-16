@@ -22,7 +22,8 @@ export function removeGroup(id) {
 export function updateGroup(updatedEntity) {
     return {
         type: UPDATE_GROUP,
-        group: updatedEntity
+        group: updatedEntity,
+        id: id
     }
 }
 
@@ -40,7 +41,7 @@ export function remoteGetGroups() {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().groupState;
 
                 for (let i = 0; i < json.length; i++) {
                     if (state[json[i].Id] === undefined)
@@ -71,10 +72,10 @@ export function remoteAddGroup(group) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().groupState;
 
                 if (state[group.Id] !== undefined)
-                    dispatch(updateGroup(json));
+                    dispatch(updateGroup(json, group.Id));
                 else
                     dispatch(addGroup(json));
                 return json;
@@ -101,7 +102,7 @@ export function remoteUpdateGroup(group) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().groupState;
 
                 if (state[group.Id] !== undefined)
                     dispatch(updateGroup(json));
@@ -129,7 +130,7 @@ export function remoteRemoveGroup(group) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const state = getState();
+                const state = getState().groupState;
 
                 if (state[group.Id] !== undefined)
                     dispatch(removeGroup(group));
