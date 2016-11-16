@@ -4,8 +4,10 @@
 let nextId = -1;
 export default class GroupMembership {
     Id;
-    UserId;
-    GroupId;
+    UserId = null;
+    GroupId = null;
+    createdAt = null;
+    updatedAt = null;
 
     constructor(id) {
         if (id === undefined)
