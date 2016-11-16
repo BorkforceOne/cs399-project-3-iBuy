@@ -6,7 +6,7 @@ import {getSession} from './SessionSelectors';
 import {getMemberships} from './MembershipSelectors';
 
 export const getRawItems = createSelector(
-    [state => state.itemState, getMemberships, getSession], // This is bad, dont do this
+    [state => state.itemState, getMemberships, getSession],
     (items, memberships, session) => {
         let outItems = {};
         for (let id in items) {

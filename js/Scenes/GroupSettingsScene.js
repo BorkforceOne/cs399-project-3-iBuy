@@ -89,6 +89,17 @@ class GroupSettingsScene extends Component {
             }
         }
     }
+    deleteGroup() {
+        Alert.alert("Are you sure?", "Are you sure you want to delete this group? This operation cannot be undone and all items associated with the group will be removed forever.",
+        [
+            {text:"Yes", onPress: ()=> {
+                let group = this.props.groups[this.props.route.groupId];
+                this.props.dispatch(Actions.removeGroup(group));
+                this.onGoBack();
+            }},
+            {text:"Cancel"}
+        ])
+    }
     inviteUser() {
         let email = this.state.inviteEmail;
 
@@ -208,6 +219,13 @@ class GroupSettingsScene extends Component {
                                 <Button style={{flex: 0.3}} block onPress={this.inviteUser.bind(this)}>Invite</Button>
                             </ListItem>
                         </List>
+                    </View>
+
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginLeft: 50, marginRight: 50, marginTop: 20}}>
+                        <Button style={{width: 200}} danger block onPress={this.deleteGroup.bind(this)}>
+                            <Icon name="md-trash" />
+                            Delete Group
+                        </Button>
                     </View>
                 </Content>
             </Container>

@@ -12,10 +12,10 @@ export function addGroup(group) {
     }
 }
 
-export function removeGroup(id) {
+export function removeGroup(group) {
     return {
         type: REMOVE_GROUP,
-        id
+        group
     }
 }
 
