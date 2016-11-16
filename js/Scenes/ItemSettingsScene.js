@@ -29,10 +29,14 @@ class ItemSettingsScene extends Component {
                 return;
         } else if (field == "Cost") {
             value = Math.floor(parseFloat(value.substring(1)) * 100) / 100;
+            if (event.nativeEvent.text == "$")
+                value = 0;
             if (isNaN(value) || !isFinite(value))
                 return;
             if (event.nativeEvent.text.charAt(event.nativeEvent.text.length-1) == '.')
                 value = value.toString() + '.';
+            if (event.nativeEvent.text.substring(event.nativeEvent.text.length-2) == ".0")
+                value = value.toString() + '.0';
         }
         item[field] = value;
         this.props.dispatch(Actions.updateItem(item));
