@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem} from 'native-base';
+import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem } from 'native-base';
 import { connect } from 'react-redux';
 import DateTimePicker from '../Components/DateTimePicker';
 import Time from '../Utils/Time';
 import Actions from '../Store/Actions';
 import Moment from 'moment';
+import Selectors from '../Store/Selectors';
+import Picker from '../Components/Picker';
+
+const Item = Picker.Item;
 
 class ItemSettingsScene extends Component {
     constructor(props) {
@@ -19,12 +23,26 @@ class ItemSettingsScene extends Component {
         item[field] = event.nativeEvent.text;
         this.props.dispatch(Actions.updateItem(item));
     }
+    onSelectionChange(field, newValue) {
+        let item = this.props.items[this.props.route.itemId];
+        item[field] = newValue;
+        this.props.dispatch(Actions.updateItem(item));
+    }
     onDatetimeChanged(field, event) {
         let item = this.props.items[this.props.route.itemId];
         item[field] = Moment(event).toISOString();
         this.props.dispatch(Actions.updateItem(item));
     }
     render() {
+
+        let groupOptions = [];
+        for (let id in this.props.groups) {
+            let group = this.props.groups[id];
+            groupOptions.push(
+                <Item label={group.Name} value={group.Id} key={group.Id} />
+            );
+        }
+
         let item = this.props.items[this.props.route.itemId];
         return (
             <Container>
@@ -37,7 +55,6 @@ class ItemSettingsScene extends Component {
                 </Header>
 
                 <Content>
-
                     <List>
                         <ListItem>
                             <InputGroup>
@@ -45,9 +62,15 @@ class ItemSettingsScene extends Component {
                             </InputGroup>
                         </ListItem>
                         <ListItem>
-                            <InputGroup>
-                                <Input inlineLabel label="CATEGORY" value={item.Category} onChange={this.onInputChange.bind(this, 'Category')} />
-                            </InputGroup>
+                            <Picker label="GROUP" value={item.GroupId} onChange={this.onSelectionChange.bind(this, "GroupId")}>
+                                {groupOptions}
+                            </Picker>
+                        </ListItem>
+                        <ListItem>
+                            <Picker label="CATEGORY" value={item.Category} onChange={this.onSelectionChange.bind(this, "Category")}>
+                                <Item label="Category 1" value="1"/>
+                                <Item label="Category 2" value="2"/>
+                            </Picker>
                         </ListItem>
                         <ListItem>
                             <DateTimePicker label="DUE" date={item.Due} mode={'datetime'} onChange={this.onDatetimeChanged.bind(this, 'Due')}/>
@@ -89,7 +112,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function (store) {
     return {
-        items: store.itemState
+        items: Selectors.getItems(store),
+        groups: Selectors.getGroups(store)
     };
 };
 

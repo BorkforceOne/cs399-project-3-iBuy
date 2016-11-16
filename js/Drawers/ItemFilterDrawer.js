@@ -3,24 +3,32 @@ import { StyleSheet, View } from 'react-native';
 import { Container, List, Header, Title, Content, Badge, Text, ListItem } from 'native-base';
 import ColorCodedListItem from '../Components/ColorCodedListItem';
 import '../Utils/NumberHelpers';
+import { connect } from 'react-redux';
+import Selectors from '../Store/Selectors';
 
-export default class ItemFilterDrawer extends Component {
-    constructor() {
-        super();
-        this.state = {
-            groups: [
-                {
-                    name: "Group 1",
-                    color: "#f33",
-                    numberItems: 4
-                },
-                {
-                    name: "Group 2",
-                    color: "#1a1",
-                    numberItems: 6
-                }
-            ]
-        }
+class ItemFilterDrawer extends Component {
+    constructor(props) {
+        super(props);
+    }
+    onDateFilterSelected(range) {
+        this.props.onFilterSelected({
+            Type: "BY_RANGE",
+            Range: range,
+            Title: "Last 7 Days"
+        });
+    }
+    onGroupFilterSelected(groupId) {
+        this.props.onFilterSelected({
+            Type: "BY_GROUP",
+            GroupId: groupId,
+            Title: this.props.groups[groupId].Name
+        });
+    }
+    onAllFilterSelected() {
+        this.props.onFilterSelected({
+            Type: "ALL",
+            Title: "All Items"
+        });
     }
     render() {
 
@@ -32,14 +40,16 @@ export default class ItemFilterDrawer extends Component {
             </ListItem>
         );
 
-        filters = filters.concat(this.state.groups.map((group, i) => {
-            return (
-                <ColorCodedListItem key={"group-" + i} color={group.color}>
-                    <Text>{group.name}</Text>
-                    <Badge info textStyle={{lineHeight: 20}}>{group.numberItems}</Badge>
+        for (let id in this.props.groups) {
+            let group = this.props.groups[id];
+            filters.push(
+                <ColorCodedListItem key={"group-" + id} color={group.Color}
+                    onPress={this.onGroupFilterSelected.bind(this, id)}>
+                    <Text>{group.Name}</Text>
+                    <Badge info textStyle={{lineHeight: 20}}>{group.ItemIds.length}</Badge>
                 </ColorCodedListItem>
             );
-        }));
+        }
 
         filters.push(
             <ListItem itemDivider key={"others-divider"}>
@@ -48,9 +58,16 @@ export default class ItemFilterDrawer extends Component {
         );
 
         filters.push(
-            <ListItem key="others-7days">
+            <ListItem key="others-7days" onPress={this.onAllFilterSelected.bind(this)}>
+                <Text>All Items</Text>
+                <Badge info textStyle={{lineHeight: 20}}>{Object.keys(this.props.items).length}</Badge>
+            </ListItem>
+        );
+
+        filters.push(
+            <ListItem key="others-7days" onPress={this.onDateFilterSelected.bind(this, 7 * 24 * 60 * 60 * 1000)}>
                 <Text>Upcoming within 7 days</Text>
-                <Badge info textStyle={{lineHeight: 20}}>2</Badge>
+                <Badge info textStyle={{lineHeight: 20}}>{this.props.items7DaysCount}</Badge>
             </ListItem>
         );
 
@@ -82,3 +99,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'red'
     }
 });
+
+
+const getNext7Days = Selectors.makeGetItemsFromTimespan(7 * 24 * 60 * 60 * 1000);
+const mapStateToProps = function(state) {
+    return {
+        groups: Selectors.getGroups(state),
+        items: Selectors.getItems(state),
+        items7DaysCount: Object.keys(getNext7Days(state)).length
+    };
+};
+
+export default connect(mapStateToProps)(ItemFilterDrawer);

@@ -10,6 +10,8 @@ import '../Utils/NumberHelpers';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
 import Item from '../Models/Item';
+import Selectors from '../Store/Selectors';
+import _ from 'lodash';
 
 class ItemViewScene extends Component {
     constructor() {
@@ -46,6 +48,11 @@ class ItemViewScene extends Component {
 
     onAddItem() {
         let item = new Item();
+        if (this.props.route.filter && this.props.route.filter.Type == "BY_GROUP")
+            item.GroupId = this.props.route.filter.GroupId;
+        else if (Object.keys(this.props.groups).length > 0)
+            item.GroupId = Object.keys(this.props.groups)[0];
+
         this.props.dispatch(Actions.addItem(item));
 
         this.gotoScene("item-settings", item.Id);
@@ -56,13 +63,23 @@ class ItemViewScene extends Component {
             showDrawer: true
         })
     }
+
+    onFilterChanged(filter) {
+        let newRoute = _.cloneDeep(this.props.route);
+        newRoute.filter = _.cloneDeep(filter);
+        this.props.navigator.replace(newRoute);
+    }
+
     render() {
 
         let items = [];
         for (let id in this.props.items) {
             let item = this.props.items[id];
+            let color = "white";
+            if (this.props.groups[item.GroupId])
+                color = this.props.groups[item.GroupId].Color
             items.push(
-                <ColorCodedListItem key={id} iconLeft color={item.Color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
+                <ColorCodedListItem key={id} iconLeft color={color} button onPress={this.gotoScene.bind(this, "item-settings", id)}>
                     <Icon name='md-home' />
                     <Text>{item.Name + " (" + item.Quantity + ")"}</Text>
                     <Text note>{"due " + Time.getTimeToNow(item.Due) + "  "}</Text>
@@ -70,6 +87,8 @@ class ItemViewScene extends Component {
                 </ColorCodedListItem>
             );
         }
+
+        let filterTitle = (this.props.route.filter && this.props.route.filter.Title) ? this.props.route.filter.Title : "All Items";
 
         return (
             <Drawer
@@ -80,7 +99,7 @@ class ItemViewScene extends Component {
                 acceptTap={true}
                 closedDrawerOffset={-3}
                 styles={drawerStyles}
-                content={<ItemFilterDrawer {...this.props}/>}
+                content={<ItemFilterDrawer {...this.props} onFilterSelected={this.onFilterChanged.bind(this)}/>}
                 elevation={15}
                 tweenHandler={(ratio) => ({
                     main: { opacity: (2-ratio/2) },
@@ -105,7 +124,7 @@ class ItemViewScene extends Component {
                             <Button transparent onPress={this.onShowDrawer.bind(this)}>
                                 <Icon name="md-menu" />
                             </Button>
-                            <Title>Item View - Next 7 Days</Title>
+                            <Title>Item View - {filterTitle}</Title>
                             <Button transparent onPress={this.openMenu.bind(this)}>
                                 <Icon name="md-more" />
                             </Button>
@@ -166,10 +185,15 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = function (store) {
-    return {
-        items: store.itemState
+const makeMapStateToProps = () => {
+    const getItemsFromFilter = Selectors.makeGetItemsFromFilter();
+    const mapStateToProps = (state, props) => {
+        return {
+            items: getItemsFromFilter(state, props),
+            groups: Selectors.getGroups(state)
+        };
     };
+    return mapStateToProps;
 };
 
-export default connect(mapStateToProps)(ItemViewScene);
+export default connect(makeMapStateToProps)(ItemViewScene);

@@ -6,7 +6,8 @@ export default class Group {
     Id;
     Name = "";
     Color = "#ffffff";
-    Items;
+    ItemIds = [];
+    UserIds = [];
 
     constructor(id) {
         if (id === undefined)
