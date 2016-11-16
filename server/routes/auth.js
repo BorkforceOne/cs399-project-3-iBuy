@@ -26,7 +26,7 @@ router.post('/api/v1/auth/login', function(req, res, next) {
         .then(result => {
             if (result === false)
                 throw "Invalid email or password";
-            req.session.userId = foundUser.id;
+            req.session.userId = foundUser.Id;
 
             return foundUser;
         })

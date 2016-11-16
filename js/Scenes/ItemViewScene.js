@@ -21,6 +21,23 @@ class ItemViewScene extends Component {
         }
     }
 
+    componentWillMount() {
+        this.props.dispatch(Actions.remoteGetItems());
+        this.props.dispatch(Actions.remoteGetUsers());
+        this.startPoll();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
+    }
+
+    startPoll() {
+        this.timeout = setTimeout(() => {
+            this.props.dispatch(Actions.remoteGetItems())
+            this.props.dispatch(Actions.remoteGetUsers())
+        }, 15000);
+    }
+
     openMenu() {
         this.refs.MenuContext.openMenu("menu");
     }
@@ -210,7 +227,8 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         return {
             items: getItemsFromFilter(state, props),
-            groups: Selectors.getGroups(state)
+            groups: Selectors.getGroups(state),
+            users: Selectors.getUsers(state)
         };
     };
     return mapStateToProps;

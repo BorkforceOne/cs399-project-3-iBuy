@@ -11,6 +11,7 @@ export const UPDATE_GROUP = 'UPDATE_GROUP';
 
 export const ADD_USER = 'ADD_USER';
 export const REMOVE_USER = 'REMOVE_USER';
+export const UPDATE_USER = 'UPDATE_USER';
 
 export const ADD_MEMBERSHIP = 'ADD_MEMBERSHIP';
 export const REMOVE_MEMBERSHIP = 'REMOVE_MEMBERSHIP';

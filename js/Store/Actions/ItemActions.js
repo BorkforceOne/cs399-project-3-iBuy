@@ -40,7 +40,7 @@ export function remoteGetItems() {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 for (let i = 0; i < json.length; i++) {
                     if (state[json[i].Id] === undefined)
@@ -71,7 +71,7 @@ export function remoteAddItem(item) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 if (state[item.Id] !== undefined)
                     dispatch(updateItem(json));
@@ -101,7 +101,7 @@ export function remoteUpdateItem(item) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 if (state[item.Id] !== undefined)
                     dispatch(updateItem(json));
@@ -129,7 +129,7 @@ export function remoteRemoveItem(item) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 if (state[item.Id] !== undefined)
                     dispatch(removeItem(item));
