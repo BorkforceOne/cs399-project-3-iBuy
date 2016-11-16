@@ -10,11 +10,7 @@ router.get('/api/v1/group-memberships', function(req, res, next) {
         'UserId': req.session.userId
     };
 
-    GroupMembership.findAll({
-        where: {
-            UserId: params.UserId
-        }
-    })
+    GroupMembership.findAll()
         .then(serializer.serializeModels)
         .then(restUtils.prepareResponse)
         .then(payload => restUtils.sendResponse(payload, req, res))
@@ -43,7 +39,6 @@ router.delete('/api/v1/group-memberships/:id', function(req, res, next) {
 
     GroupMembership.destroy({
         where: {
-            UserId: params.UserId,
             id: params.id
         }
     })
