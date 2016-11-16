@@ -51,6 +51,17 @@ class GroupSettingsScene extends Component {
             inviteEmail: event.nativeEvent.text
         });
     }
+    deleteMembership(userId) {
+        for (let id in this.props.memberships) {
+            let membership = this.props.memberships[id];
+            if (membership.UserId == userId) {
+                this.props.dispatch(Actions.removeMembership(membership));
+                if (userId == this.props.session.Id)
+                    this.onGoBack();
+                return;
+            }
+        }
+    }
     inviteUser() {
         let email = this.state.inviteEmail;
 
@@ -59,6 +70,17 @@ class GroupSettingsScene extends Component {
         for (let id in this.props.users) {
             let user = this.props.users[id];
             if (user.Email == email) {
+
+                for (let i = 0; i < user.GroupIds.length; i++) {
+                    if (this.props.route.groupId == user.GroupIds[i]) {
+                        Alert.alert("Already in group", "The user you invited is already in the group",
+                        [
+                            {text:"Ok"}
+                        ]);
+                        return;
+                    }
+                }
+
                 let membership = new GroupMembership();
                 membership.UserId = user.Id;
                 membership.GroupId = this.props.route.groupId;
@@ -68,20 +90,21 @@ class GroupSettingsScene extends Component {
                 this.setState({
                     inviteEmail: ""
                 });
-                break;
+                return;
             }
         }
 
-        if (!found) {
-            Alert.alert("User not found", "A user with that email was not found",
-            [
-                {text:"Ok"}
-            ]);
-        }
+        Alert.alert("User not found", "A user with that email was not found",
+        [
+            {text:"Ok"}
+        ]);
     }
     render() {
 
         let group = this.props.groups[this.props.route.groupId];
+
+        if (!group)
+            return null;
 
         let userRows = [];
         for (let i = 0; i < group.UserIds.length; i++) {
@@ -90,9 +113,11 @@ class GroupSettingsScene extends Component {
                 userRows.push(
                     <ListItem key={i}>
                         <View style={{flex: 1, flexDirection: 'row'}}>
-                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.FirstName} {user.LastName}</Text>
+                            <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Firstname} {user.Lastname}</Text>
                             <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
-                            <Icon name="md-trash"/>
+                            <Button danger onPress={this.deleteMembership.bind(this, user.Id)}>
+                                <Icon name="md-trash"/>
+                            </Button>
                         </View>
                     </ListItem>
                 );
@@ -190,7 +215,8 @@ const mapStateToProps = function (store) {
     return {
         groups: Selectors.getGroups(store),
         memberships: Selectors.getMemberships(store),
-        users: Selectors.getUsers(store)
+        users: Selectors.getUsers(store),
+        session: Selectors.getSession(store)
     };
 };
 
