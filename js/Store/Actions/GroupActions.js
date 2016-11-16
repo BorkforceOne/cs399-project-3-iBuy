@@ -19,7 +19,7 @@ export function removeGroup(id) {
     }
 }
 
-export function updateGroup(updatedEntity) {
+export function updateGroup(updatedEntity, id) {
     return {
         type: UPDATE_GROUP,
         group: updatedEntity,
