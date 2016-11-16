@@ -34,32 +34,34 @@ class GroupSettingsScene extends Component {
         };
     }
     onGoBack() {
-        new Promise((resolve, reject) => {
-            if (this.props.groups[this.props.route.groupId] !== undefined) {
-                if (this.props.route.groupId < 1) {
-                    this.props.dispatch(Actions.remoteAddGroup(this.props.groups[this.props.route.groupId]))
-                        .then(resolve)
-                } else {
-                    this.props.dispatch(Actions.remoteUpdateGroup(this.props.groups[this.props.route.groupId]))
-                        .then(resolve)
-                }
-            }
-        })
-            .then((group) => {
-                console.log(group);
-                if (this.props.route.groupId < 1) {
-                    this.props.memberships[this.props.route.membershipId]['GroupId'] = group.Id;
-                    this.props.dispatch(Actions.updateMembership(this.props.memberships[this.props.route.membershipId]));
-                }
-
-                if (this.props.memberships[this.props.route.membershipId] !== undefined) {
-                    if (this.props.route.membershipId < 1) {
-                        this.props.dispatch(Actions.remoteAddMembership(this.props.memberships[this.props.route.membershipId]))
+        if (this.props.groups[this.props.route.groupId] !== undefined) {
+            new Promise((resolve, reject) => {
+                if (this.props.groups[this.props.route.groupId] !== undefined) {
+                    if (this.props.route.groupId < 1) {
+                        this.props.dispatch(Actions.remoteAddGroup(this.props.groups[this.props.route.groupId]))
+                            .then(resolve)
                     } else {
-                        this.props.dispatch(Actions.remoteUpdateMembership(this.props.memberships[this.props.route.membershipId]))
+                        this.props.dispatch(Actions.remoteUpdateGroup(this.props.groups[this.props.route.groupId]))
+                            .then(resolve)
                     }
                 }
-            });
+            })
+                .then((group) => {
+                    console.log(group);
+                    if (this.props.route.groupId < 1) {
+                        this.props.memberships[this.props.route.membershipId]['GroupId'] = group.Id;
+                        this.props.dispatch(Actions.updateMembership(this.props.memberships[this.props.route.membershipId]));
+                    }
+
+                    if (this.props.memberships[this.props.route.membershipId] !== undefined) {
+                        if (this.props.route.membershipId < 1) {
+                            this.props.dispatch(Actions.remoteAddMembership(this.props.memberships[this.props.route.membershipId]))
+                        } else {
+                            this.props.dispatch(Actions.remoteUpdateMembership(this.props.memberships[this.props.route.membershipId]))
+                        }
+                    }
+                });
+        }
         this.props.navigator.pop();
     }
     onInputChange(field, event) {
@@ -95,6 +97,7 @@ class GroupSettingsScene extends Component {
             {text:"Yes", onPress: ()=> {
                 let group = this.props.groups[this.props.route.groupId];
                 this.props.dispatch(Actions.removeGroup(group));
+                this.props.dispatch(Actions.remoteRemoveGroup(group));
                 this.onGoBack();
             }},
             {text:"Cancel"}
