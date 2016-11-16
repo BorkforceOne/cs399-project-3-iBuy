@@ -6,13 +6,15 @@ import Moment from 'moment';
 let nextId = -1;
 export default class Item {
     Id;
-    PurchaserId = null;
     GroupId = null;
     Name = "";
     Quantity = 1;
     Cost = 1;
     Category = "";
     Due = Moment().toISOString();
+    Color = "#00f";
+    Completed = false;
+    CompletedById = null;
 
     constructor(id) {
         if (id === undefined)

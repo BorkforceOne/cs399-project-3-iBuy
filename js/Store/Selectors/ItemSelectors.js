@@ -3,7 +3,28 @@ import _ from 'lodash';
 import { createSelector } from 'reselect';
 import Moment from 'moment';
 
-export const getItems = (state) => state.itemState;
+export const getRawItems = (state) => state.itemState;
+export const getItems = createSelector(
+    [getRawItems],
+    (items) => {
+        return Object.keys(items)
+            .sort((a, b) => {
+                let ea = items[a];
+                let eb = items[b];
+                if (ea.Completed && !eb.Completed)
+                    return 1;
+                if (eb.Completed && !ea.Completed)
+                    return -1;
+
+                if (ea.Due < eb.Due)
+                    return -1;
+                if (ea.Due > eb.Due)
+                    return 1;
+                return 0;
+            })
+            .reduce( (res, key) => (res[key] = items[key], res), {} );
+    }
+);
 
 const getFilterFromRoute = (state, props) => props.route.filter;
 
@@ -13,11 +34,19 @@ const getItemsFromTimespan = (items, timespan) => {
         .reduce( (res, key) => (res[key] = items[key], res), {} );
 };
 
+const hideCompletedTasks = (items) => {
+    return Object.keys(items)
+        .filter( key => !items[key].Completed )
+        .reduce( (res, key) => (res[key] = items[key], res), {} );
+};
+
 export const makeGetItemsFromFilter = () => {
     return createSelector(
         [ getItems, getFilterFromRoute ],
         (items, filter) => {
             let type = filter ? filter.Type : "ALL";
+            if (!filter || !filter.ShowCompleted)
+                items = hideCompletedTasks(items);
             switch (type) {
                 case 'BY_GROUP':
                     return Object.keys(items)
