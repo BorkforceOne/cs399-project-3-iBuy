@@ -32,17 +32,21 @@ app.use(session({
 }));
 
 // Sync the database
-database.syncDatabase(true);
+database.syncDatabase();
 
 /**
  * Set up the routes
  */
 const users = require('./routes/users');
-const attachments = require('./routes/attachments');
 const auth = require('./routes/auth');
+const groups = require('./routes/groups');
+const items = require('./routes/items');
+const group_memberships = require('./routes/group_memberships');
 app.use(users);
-app.use(attachments);
 app.use(auth);
+app.use(groups);
+app.use(items);
+app.use(group_memberships);
 
 /**
  * Finish setting express settings

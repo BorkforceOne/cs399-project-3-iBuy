@@ -6,6 +6,10 @@ export default class Group {
     Id;
     Name = "";
     Color = "red";
+    CreatedById = null;
+    createdAt = null;
+    updatedAt = null;
+
     ItemIds = [];
     UserIds = [];
 

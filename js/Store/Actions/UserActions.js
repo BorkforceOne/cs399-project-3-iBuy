@@ -21,7 +21,7 @@ export function removeUser(id) {
 
 export function createUser(user) {
 
-    return function (dispatch) {
+    return function (dispatch, getState) {
 
         return fetch(`${ServerURL}/api/v1/users`,
             {
@@ -35,7 +35,7 @@ export function createUser(user) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                    addUser(json);
+                    dispatch(addUser(json));
                     return json;
                 }
             )

@@ -8,7 +8,11 @@ export default class User {
     Lastname = "";
     Email = "";
     Password = "";
+    createdAt = null;
+    updatedAt = null;
+
     GroupIds = [];
+
     constructor(id) {
         if (id === undefined)
             this.Id = nextId--;
