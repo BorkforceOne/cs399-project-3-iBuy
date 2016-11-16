@@ -49,6 +49,21 @@ export function remoteGetItems() {
                     else
                         dispatch(updateItem(json[i]));
                 }
+
+                for (let id in state) {
+                    id = parseInt(id);
+                    if (id > 0) {
+                        let found = false;
+                        for (let i = 0; i < json.length; i++) {
+                            if (json[i].Id == id) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                            dispatch(removeItem(state[id]));
+                    }
+                }
             })
             .catch(error => {
                 handleRESTErrors(dispatch, error);
