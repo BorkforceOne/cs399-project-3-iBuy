@@ -32,7 +32,7 @@ app.use(session({
 }));
 
 // Sync the database
-database.syncDatabase(true);
+database.syncDatabase();
 
 /**
  * Set up the routes

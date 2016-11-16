@@ -22,6 +22,12 @@ const Group = database.sequelize.define('group', {
     Color: {
         allowNull: false,
         type: Sequelize.STRING
+    },
+    Id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
     }
 },{
     instanceMethods: {
@@ -50,7 +56,7 @@ Group.hasMany(Item, {
  * @returns {[string]}
  */
 Group.getSerializableFields = function () {
-    return ['id', 'Name', 'Color', 'CreatedById'];
+    return ['Id', 'Name', 'Color', 'CreatedById', 'createdAt', 'updatedAt'];
 };
 
 module.exports = Group;

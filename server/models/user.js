@@ -36,6 +36,12 @@ const User = database.sequelize.define('user', {
   Salt: {
     allowNull: false,
     type: Sequelize.STRING
+  },
+  Id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true
   }
 },{
   instanceMethods: {
@@ -94,7 +100,7 @@ User.hasMany(Group, {
  * @returns {[string]}
  */
 User.getSerializableFields = function () {
-  return ['id', 'Firstname', 'Lastname', 'Email', 'createdAt', 'updatedAt'];
+  return ['Id', 'Firstname', 'Lastname', 'Email', 'createdAt', 'updatedAt'];
 };
 
 module.exports = User;

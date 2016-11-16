@@ -36,6 +36,12 @@ const Item = database.sequelize.define('item', {
     },
     DateCompleted: {
         type:Sequelize.DATE
+    },
+    Id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
     }
 },{
     instanceMethods: {
@@ -50,7 +56,7 @@ const Item = database.sequelize.define('item', {
  * @returns {[string]}
  */
 Item.getSerializableFields = function () {
-    return ['id', 'CreatedById', 'CompletedById', 'GroupId', 'DateCompleted', 'Completed', 'Quantity', 'Cost', 'Category', 'Due', 'createdAt', 'updatedAt'];
+    return ['Id', 'CreatedById', 'CompletedById', 'GroupId', 'DateCompleted', 'Completed', 'Quantity', 'Cost', 'Category', 'Due', 'createdAt', 'updatedAt'];
 };
 
 module.exports = Item;
