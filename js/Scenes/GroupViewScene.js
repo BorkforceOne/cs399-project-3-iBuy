@@ -15,11 +15,32 @@ class GroupViewScene extends Component {
         super();
     }
 
+    componentWillMount() {
+        this.props.dispatch(Actions.remoteGetItems());
+        this.props.dispatch(Actions.remoteGetGroups());
+        this.props.dispatch(Actions.remoteGetUsers());
+        this.props.dispatch(Actions.remoteGetMemberships());
+        this.startPoll();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
+    }
+
+    startPoll() {
+        this.timeout = setTimeout(() => {
+            this.props.dispatch(Actions.remoteGetItems());
+            this.props.dispatch(Actions.remoteGetGroups());
+            this.props.dispatch(Actions.remoteGetUsers());
+            this.props.dispatch(Actions.remoteGetMemberships());
+        }, 15000);
+    }
+
     openMenu() {
         this.refs.MenuContext.openMenu("menu");
     }
 
-    gotoScene(id, entityId) {
+    gotoScene(id, entityId, auxId) {
         if (id == "sign-in") {
             this.props.navigator.resetTo({
                 id: id
@@ -27,7 +48,8 @@ class GroupViewScene extends Component {
         } else if (id == "group-settings") {
             this.props.navigator.push({
                 id: id,
-                groupId: entityId
+                groupId: entityId,
+                membershipId: auxId
             });
         } else if (id == "group-view" || id == "item-view") {
             this.props.navigator.replace({
@@ -49,7 +71,7 @@ class GroupViewScene extends Component {
         membership.GroupId = group.Id;
         this.props.dispatch(Actions.addMembership(membership));
 
-        this.gotoScene("group-settings", group.Id);
+        this.gotoScene("group-settings", group.Id, membership.Id);
     }
 
     render() {

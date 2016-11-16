@@ -2,7 +2,7 @@
  * Created by Brandon Garling on 11/14/2016.
  */
 import _ from 'lodash';
-import { ADD_MEMBERSHIP, REMOVE_MEMBERSHIP } from '../ActionTypes';
+import { ADD_MEMBERSHIP, REMOVE_MEMBERSHIP, MODIFY_MEMBERSHIP } from '../ActionTypes';
 
 /**
  *
@@ -18,6 +18,11 @@ export const membershipReducer = function(state = {}, action) {
             return newState;
         case REMOVE_MEMBERSHIP:
             delete newState[action.membership.Id];
+            return newState;
+        case MODIFY_MEMBERSHIP:
+            if (action.id !== undefined)
+                delete newState[action.id];
+            newState[action.membership.Id] = _.cloneDeep(action.membership);
             return newState;
     }
     return state;
