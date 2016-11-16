@@ -7,6 +7,8 @@ import { Container, Button, InputGroup, Input, Header, Title, Icon, List, ListIt
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
 import User from '../Models/User';
+import Group from '../Models/Group';
+import GroupMembership from '../Models/GroupMembership';
 import Notification from '../Components/Notification';
 
 class RegisterScene extends Component {
@@ -31,8 +33,19 @@ class RegisterScene extends Component {
 
         this.props.dispatch(Actions.createUser(user))
             .then(user => {
-                this.props.dispatch(Actions.addNotification("User account created"));
-                this.props.navigator.pop();
+                let group = new Group();
+                group.Name = "Default";
+                this.props.dispatch(Actions.remoteAddGroup(group))
+                    .then(group => {
+                        let membership = new GroupMembership();
+                        membership.UserId = user.Id;
+                        membership.GroupId = group.Id;
+                        this.props.dispatch(Actions.remoteAddMembership(membership))
+                            .then(membership => {
+                                this.props.dispatch(Actions.addNotification("User account created"));
+                                this.props.navigator.pop();
+                            });
+                    });
             })
             .catch((error) => {});
     }

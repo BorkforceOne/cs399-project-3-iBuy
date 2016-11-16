@@ -30,11 +30,11 @@ class ItemViewScene extends Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeout);
+        clearInterval(this.timeout);
     }
 
     startPoll() {
-        this.timeout = setTimeout(() => {
+        this.timeout = setInterval(() => {
             this.props.dispatch(Actions.remoteGetItems());
             this.props.dispatch(Actions.remoteGetGroups());
             this.props.dispatch(Actions.remoteGetUsers());

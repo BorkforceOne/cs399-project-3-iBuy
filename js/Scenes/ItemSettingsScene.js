@@ -22,11 +22,11 @@ class ItemSettingsScene extends Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeout);
+        clearInterval(this.timeout);
     }
 
     startPoll() {
-        this.timeout = setTimeout(() => {
+        this.timeout = setInterval(() => {
             this.props.dispatch(Actions.remoteGetMemberships());
             this.props.dispatch(Actions.remoteGetGroups());
         }, 15000);
