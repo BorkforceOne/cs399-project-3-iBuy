@@ -13,7 +13,6 @@ export default class Item {
     Cost = 1;
     Category = "";
     Due = Moment().toISOString();
-    Color = "#00f";
 
     constructor(id) {
         if (id === undefined)
