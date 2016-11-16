@@ -40,7 +40,7 @@ export function remoteGetMemberships() {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 for (let i = 0; i < json.length; i++) {
                     if (state[json[i].Id] === undefined)
@@ -71,7 +71,7 @@ export function remoteAddMembership(membership) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 if (state[membership.Id] !== undefined)
                     dispatch(updateMembership(json));
@@ -100,7 +100,7 @@ export function remoteRemoveMembership(membership) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                const { state } = getState();
+                const state = getState();
 
                 if (state[group.Id] !== undefined)
                     dispatch(removeMembership(membership));

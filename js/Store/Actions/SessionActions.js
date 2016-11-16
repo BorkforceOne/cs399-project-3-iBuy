@@ -34,10 +34,9 @@ export function loginUser(user) {
             .then(response => response.json())
             .then(json => parseRESTResponse(json))
             .then(json => {
-                    dispatch(setSession(json));
-                    return json;
-                }
-            )
+                dispatch(setSession(json));
+                return json;
+            })
             .catch(error => {
                 handleRESTErrors(dispatch, error);
                 throw error;
