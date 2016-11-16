@@ -58,7 +58,7 @@ class ItemFilterDrawer extends Component {
         );
 
         filters.push(
-            <ListItem key="others-7days" onPress={this.onAllFilterSelected.bind(this)}>
+            <ListItem key="all-items" onPress={this.onAllFilterSelected.bind(this)}>
                 <Text>All Items</Text>
                 <Badge info textStyle={{lineHeight: 20}}>{Object.keys(this.props.items).length}</Badge>
             </ListItem>
