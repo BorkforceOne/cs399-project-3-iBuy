@@ -6,6 +6,24 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Container, Button, Header, Icon, Title, Content, H3, Input, InputGroup, List, ListItem} from 'native-base';
 import { connect } from 'react-redux';
 import Actions from '../Store/Actions';
+import Picker from '../Components/Picker';
+import Selectors from '../Store/Selectors';
+
+const Item = Picker.Item;
+
+const availableColors = {
+    "Red" : "crimson",
+    "Orange" : "darkorange",
+    "Yellow" : "gold",
+    "Green": "forestgreen",
+    "Blue" : "royalblue",
+    "Purple": "rebeccapurple",
+    "Black": "black",
+    "Gray": "slategray",
+    "White": "white",
+    "Brown": "saddlebrown",
+    "Pink": "hotpink"
+};
 
 class GroupSettingsScene extends Component {
     constructor(props) {
@@ -19,21 +37,33 @@ class GroupSettingsScene extends Component {
         group[field] = event.nativeEvent.text;
         this.props.dispatch(Actions.updateGroup(group));
     }
+    onSelectionChange(field, newValue) {
+        let group = this.props.groups[this.props.route.groupId];
+        group[field] = newValue;
+        this.props.dispatch(Actions.updateGroup(group));
+    }
     render() {
 
         let group = this.props.groups[this.props.route.groupId];
 
         let userRows = [];
-        for (let id in this.props.users) {
-            let user = this.props.users[id];
+        for (let i = 0; i < group.UserIds.length; i++) {
+            let user = this.props.users[group.UserIds[i]];
             userRows.push(
-                <ListItem key={id}>
+                <ListItem key={i}>
                     <View style={{flex: 1, flexDirection: 'row' }}>
-                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Firstname} {user.Lastname}</Text>
+                        <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.FirstName} {user.LastName}</Text>
                         <Text style={{flex: 1, textAlignVertical: 'center'}}>{user.Email}</Text>
                         <Icon name="md-trash"/>
                     </View>
                 </ListItem>
+            );
+        }
+
+        let colorOptions = [];
+        for (let id in availableColors) {
+            colorOptions.push(
+                <Item label={id} value={availableColors[id]} key={id} />
             );
         }
 
@@ -57,9 +87,9 @@ class GroupSettingsScene extends Component {
                                 </InputGroup>
                             </ListItem>
                             <ListItem>
-                                <InputGroup>
-                                    <Input inlineLabel label="COLOR" value={group.Color} onChange={this.onInputChange.bind(this, 'Color')} />
-                                </InputGroup>
+                                <Picker label="COLOR" value={group.Color} onChange={this.onSelectionChange.bind(this, "Color")}>
+                                    {colorOptions}
+                                </Picker>
                             </ListItem>
                         </List>
                     </View>
@@ -119,9 +149,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function (store) {
     return {
-        groups: store.groupState,
-        memberships: store.membershipState,
-        users: store.userState
+        groups: Selectors.getGroups(store),
+        memberships: Selectors.getMemberships(store),
+        users: Selectors.getUsers(store)
     };
 };
 

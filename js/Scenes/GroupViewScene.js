@@ -7,6 +7,7 @@ import '../Utils/NumberHelpers';
 import {connect} from 'react-redux';
 import Actions from '../Store/Actions';
 import Group from '../Models/Group';
+import GroupMembership from '../Models/GroupMembership';
 import Selectors from '../Store/Selectors';
 
 class GroupViewScene extends Component {
@@ -42,6 +43,11 @@ class GroupViewScene extends Component {
     onAddGroup() {
         let group = new Group();
         this.props.dispatch(Actions.addGroup(group));
+
+        let membership = new GroupMembership();
+        membership.UserId = this.props.session.Id;
+        membership.GroupId = group.Id;
+        this.props.dispatch(Actions.addMembership(membership));
 
         this.gotoScene("group-settings", group.Id);
     }
@@ -132,7 +138,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function(store) {
     return {
-        groups: Selectors.getGroups(store)
+        groups: Selectors.getGroups(store),
+        session: Selectors.getSession(store)
     };
 };
 
