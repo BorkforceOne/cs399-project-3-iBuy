@@ -10,10 +10,10 @@ export function addItem(item) {
     }
 }
 
-export function removeItem(id) {
+export function removeItem(item) {
     return {
         type: REMOVE_ITEM,
-        id
+        item: item
     }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem } from 'native-base';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import { Container, Button, Header, Icon, Title, Content, InputGroup, Input, List, ListItem, Footer, FooterTab } from 'native-base';
 import { connect } from 'react-redux';
 import DateTimePicker from '../Components/DateTimePicker';
 import Time from '../Utils/Time';
@@ -20,7 +20,21 @@ class ItemSettingsScene extends Component {
     }
     onInputChange(field, event) {
         let item = this.props.items[this.props.route.itemId];
-        item[field] = event.nativeEvent.text;
+        let value = event.nativeEvent.text;
+        if (field == "Quantity") {
+            value = parseInt(value);
+            if (event.nativeEvent.text == "")
+                value = 0;
+            if (isNaN(value) || !isFinite(value))
+                return;
+        } else if (field == "Cost") {
+            value = Math.floor(parseFloat(value.substring(1)) * 100) / 100;
+            if (isNaN(value) || !isFinite(value))
+                return;
+            if (event.nativeEvent.text.charAt(event.nativeEvent.text.length-1) == '.')
+                value = value.toString() + '.';
+        }
+        item[field] = value;
         this.props.dispatch(Actions.updateItem(item));
     }
     onSelectionChange(field, newValue) {
@@ -33,6 +47,28 @@ class ItemSettingsScene extends Component {
         item[field] = Moment(event).toISOString();
         this.props.dispatch(Actions.updateItem(item));
     }
+    onComplete() {
+        let item = this.props.items[this.props.route.itemId];
+        if (!item.Completed) {
+            item.Completed = true;
+            this.props.dispatch(Actions.updateItem(item));
+            this.onGoBack();
+        }
+    }
+    onDelete() {
+        Alert.alert(
+            "Confirm Deletion",
+            "Are you sure you want to delete this item? You cannot undo this action.",
+            [
+                {text: 'Yes', onPress: () => {
+                    let item = this.props.items[this.props.route.itemId];
+                    this.props.dispatch(Actions.removeItem(item));
+                    this.onGoBack();
+                }},
+                {text: 'Cancel', onPress: () => {}}
+            ]
+        );
+    }
     render() {
 
         let groupOptions = [];
@@ -44,6 +80,8 @@ class ItemSettingsScene extends Component {
         }
 
         let item = this.props.items[this.props.route.itemId];
+        if (!item)
+            return null;
         return (
             <Container>
                 <Header>
@@ -62,7 +100,7 @@ class ItemSettingsScene extends Component {
                             </InputGroup>
                         </ListItem>
                         <ListItem>
-                            <Picker label="GROUP" value={item.GroupId} onChange={this.onSelectionChange.bind(this, "GroupId")}>
+                            <Picker label="GROUP" value={parseInt(item.GroupId)} onChange={this.onSelectionChange.bind(this, "GroupId")}>
                                 {groupOptions}
                             </Picker>
                         </ListItem>
@@ -77,12 +115,12 @@ class ItemSettingsScene extends Component {
                         </ListItem>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="QUANTITY" value={item.Quantity.toString()} onChange={this.onInputChange.bind(this, 'Quantity')}/>
+                                <Input inlineLabel label="QUANTITY" keyboardType="numeric" value={item.Quantity.toString()} onChange={this.onInputChange.bind(this, 'Quantity')}/>
                             </InputGroup>
                         </ListItem>
                         <ListItem>
                             <InputGroup>
-                                <Input inlineLabel label="ITEM COST" value={item.Cost} onChange={this.onInputChange.bind(this, 'Cost')} />
+                                <Input inlineLabel label="ITEM COST" keyboardType="numeric" value={"$" + item.Cost} onChange={this.onInputChange.bind(this, 'Cost')} />
                             </InputGroup>
                         </ListItem>
                         <ListItem>
@@ -93,6 +131,18 @@ class ItemSettingsScene extends Component {
                     </List>
 
                 </Content>
+                <Footer>
+                    <FooterTab>
+                        <Button active onPress={this.onDelete.bind(this)}>
+                            Delete
+                            <Icon name="md-trash"/>
+                        </Button>
+                        <Button active={!item.Completed} onPress={this.onComplete.bind(this)}>
+                            Mark Complete
+                            <Icon name="md-checkmark"/>
+                        </Button>
+                    </FooterTab>
+                </Footer>
             </Container>
         )
     }
